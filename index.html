@@ -47,6 +47,7 @@
       <img src="https://www.forum-csr.net/global/images/cms/Logos/click_a_tree_official_logo_horizontal_png_5_1.png" alt="Click a Tree Logo">
     </div>
     <model-viewer
+      id="tree-viewer"
       src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test2.glb"
       ar
       ar-modes="scene-viewer quick-look webxr"
@@ -54,20 +55,32 @@
       alt="A 3D model of a tree"
       shadow-intensity="1"
       auto-rotate
-      scale="0.1 0.1 0.1">
+      scale="1 1 1">
     </model-viewer>
     <button class="ar-button" id="ar-button">View in AR</button>
 
     <script>
-      const modelViewer = document.querySelector('model-viewer');
+      const modelViewer = document.querySelector('#tree-viewer');
       const arButton = document.getElementById('ar-button');
 
       arButton.addEventListener('click', () => {
         modelViewer.activateAR();
       });
+
+      function adjustScale() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        if (/android/i.test(userAgent)) {
+          modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+        } else {
+          modelViewer.setAttribute('scale', '1 1 1');
+        }
+      }
+
+      window.onload = adjustScale;
     </script>
   </body>
 </html>
+
 
 
 
