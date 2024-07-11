@@ -1,52 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AR Tree Project</title>
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background: transparent;
-    }
-    model-viewer {
-      width: 100%;
-      height: 100vh;
-      background-color: transparent;
-    }
-  </style>
-</head>
-<body>
-  <model-viewer
-    src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-    ar
-    ar-modes="webxr scene-viewer quick-look"
-    camera-controls
-    environment-image="neutral"
-    alt="A 3D model of an astronaut"
-    shadow-intensity="1"
-    auto-rotate
-    ar-scale="fixed"
-    style="width: 100%; height: 100vh; background-color: transparent;"
-    ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
-  ></model-viewer>
-  <script>
-    document.querySelector('model-viewer').addEventListener('ar-status', (event) => {
-      if (event.detail.status === 'failed') {
-        console.log('AR failed to start');
-        alert('AR konnte nicht gestartet werden. Bitte stellen Sie sicher, dass Ihr Gerät AR unterstützt und dass Sie einen unterstützten Browser verwenden.');
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Example</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
       }
-    });
-    document.querySelector('model-viewer').addEventListener('quick-look-button-tapped', (event) => {
-      console.log('Quick Look button tapped');
-    });
-  </script>
-</body>
+      model-viewer {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <model-viewer
+      src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+      ar
+      ar-modes="scene-viewer quick-look webxr"
+      camera-controls
+      alt="A 3D model of an astronaut"
+      shadow-intensity="1"
+      auto-rotate
+    ></model-viewer>
+  </body>
 </html>
+
 
 
 
