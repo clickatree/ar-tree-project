@@ -8,52 +8,40 @@
       AFRAME.registerComponent('ar-hit-test', {
         init: function () {
           const el = this.el;
-
-          console.log('Component initialized');
-
-          el.sceneEl.renderer.xr.addEventListener('sessionstart', async function () {
-            console.log('Session started');
-            const session = el.sceneEl.renderer.xr.getSession();
-
-            // Reference space for the hit test
+          const scene = this.el.sceneEl;
+          
+          scene.addEventListener('enter-vr', async () => {
+            const session = scene.renderer.xr.getSession();
             const viewerSpace = await session.requestReferenceSpace('viewer');
             const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
-
             const localSpace = await session.requestReferenceSpace('local-floor');
 
-            el.setAttribute('visible', 'false');
+            this.viewerSpace = viewerSpace;
+            this.hitTestSource = hitTestSource;
+            this.localSpace = localSpace;
 
-            // Add an event listener for the select event
-            session.addEventListener('select', () => {
-              console.log('Select event');
-              if (el.getAttribute('visible')) {
-                const clone = el.cloneNode();
-                el.sceneEl.appendChild(clone);
-                clone.setAttribute('position', el.getAttribute('position'));
-              }
-            });
-
-            // On each XR frame, get hit test results
-            el.sceneEl.addEventListener('xrframe', (event) => {
-              const frame = event.detail;
-              console.log('XR frame');
-
-              const hitTestResults = frame.getHitTestResults(hitTestSource);
-
+            session.addEventListener('select', (event) => {
+              const frame = event.frame;
+              const hitTestResults = frame.getHitTestResults(this.hitTestSource);
               if (hitTestResults.length > 0) {
-                const referenceSpace = el.sceneEl.renderer.xr.getReferenceSpace();
-                const hitPose = hitTestResults[0].getPose(referenceSpace);
-
-                el.object3D.position.copy(hitPose.transform.position);
-                el.object3D.visible = true;
-                el.setAttribute('visible', 'true');
-                console.log('Hit test successful');
-              } else {
-                el.object3D.visible = false;
-                el.setAttribute('visible', 'false');
-                console.log('No hit test results');
+                const hitPose = hitTestResults[0].getPose(this.localSpace);
+                if (hitPose) {
+                  el.setAttribute('position', {
+                    x: hitPose.transform.position.x,
+                    y: hitPose.transform.position.y,
+                    z: hitPose.transform.position.z,
+                  });
+                  el.setAttribute('visible', true);
+                }
               }
             });
+          });
+
+          scene.addEventListener('exit-vr', () => {
+            this.viewerSpace = null;
+            this.hitTestSource = null;
+            this.localSpace = null;
+            el.setAttribute('visible', false);
           });
         },
       });
@@ -63,13 +51,15 @@
     <a-scene
       vr-mode-ui="enabled: false"
       embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
       renderer="logarithmicDepthBuffer: true;"
     >
-      <a-entity camera look-controls></a-entity>
-      <a-entity id="tree-model" gltf-model="url(Fulltrees.glb)" scale="0.5 0.5 0.5" ar-hit-test></a-entity>
+      <a-camera position="0 0 0"></a-camera>
+      <a-entity id="tree-model" gltf-model="url(Fulltrees.glb)" scale="0.5 0.5 0.5" ar-hit-test visible="false"></a-entity>
     </a-scene>
   </body>
 </html>
+
 
 
 
