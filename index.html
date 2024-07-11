@@ -32,9 +32,22 @@
       auto-rotate
       ar-scale="fixed"
       style="width: 100%; height: 100vh; background-color: transparent;"
+      ios-src="Fulltrees.usdz"
     ></model-viewer>
+    <script>
+      document.querySelector('model-viewer').addEventListener('load', () => {
+        console.log('Model loaded');
+      });
+
+      document.querySelector('model-viewer').addEventListener('ar-status', (event) => {
+        if (event.detail.status === 'failed') {
+          console.log('AR failed to start');
+        }
+      });
+    </script>
   </body>
 </html>
+
 
 
 
