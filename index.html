@@ -70,9 +70,9 @@
       function adjustScale() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         if (/android/i.test(userAgent)) {
-          modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+          modelViewer.setAttribute('scale', '0.01 0.01 0.01');
         } else {
-          modelViewer.setAttribute('scale', '1 1 1');
+          modelViewer.setAttribute('scale', '0.1 0.1 0.1');
         }
       }
 
