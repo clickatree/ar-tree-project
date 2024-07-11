@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Markerless AR Tree Project</title>
+    <title>Minimal WebXR Hit Test</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script>
       AFRAME.registerComponent('ar-hit-test', {
@@ -51,14 +51,14 @@
     <a-scene
       vr-mode-ui="enabled: false"
       embedded
-      arjs="sourceType: webcam; debugUIEnabled: false;"
       renderer="logarithmicDepthBuffer: true;"
     >
       <a-camera position="0 0 0"></a-camera>
-      <a-entity id="tree-model" gltf-model="url(Fulltrees.glb)" scale="0.5 0.5 0.5" ar-hit-test visible="false"></a-entity>
+      <a-box id="hit-test-box" color="red" depth="0.5" height="0.5" width="0.5" ar-hit-test visible="false"></a-box>
     </a-scene>
   </body>
 </html>
+
 
 
 
