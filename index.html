@@ -54,8 +54,7 @@
       camera-controls
       alt="A 3D model of a tree"
       shadow-intensity="1"
-      auto-rotate
-      scale="1 1 1">
+      auto-rotate>
     </model-viewer>
     <button class="ar-button" id="ar-button">View in AR</button>
 
@@ -63,23 +62,32 @@
       const modelViewer = document.querySelector('#tree-viewer');
       const arButton = document.getElementById('ar-button');
 
-      arButton.addEventListener('click', () => {
-        modelViewer.activateAR();
-      });
-
       function adjustScale() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         if (/android/i.test(userAgent)) {
-          modelViewer.setAttribute('scale', '0.001 0.001 0.001');
+          modelViewer.addEventListener('quick-look-button-tapped', () => {
+            modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+          });
+          modelViewer.addEventListener('scene-viewer-button-tapped', () => {
+            modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+          });
+          modelViewer.addEventListener('enter-webxr', () => {
+            modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+          });
         } else {
           modelViewer.setAttribute('scale', '0.1 0.1 0.1');
         }
       }
 
       window.onload = adjustScale;
+
+      arButton.addEventListener('click', () => {
+        modelViewer.activateAR();
+      });
     </script>
   </body>
 </html>
+
 
 
 
