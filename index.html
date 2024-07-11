@@ -2,17 +2,18 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Minimal WebXR Hit Test</title>
+    <title>WebXR AR Test</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script>
       AFRAME.registerComponent('ar-hit-test', {
         init: function () {
           const el = this.el;
           const scene = this.el.sceneEl;
-          
+
           scene.addEventListener('enter-vr', async () => {
             console.log('Entering VR');
             const session = scene.renderer.xr.getSession();
+
             const viewerSpace = await session.requestReferenceSpace('viewer');
             const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
             const localSpace = await session.requestReferenceSpace('local-floor');
@@ -24,6 +25,7 @@
             session.addEventListener('select', (event) => {
               const frame = event.frame;
               const hitTestResults = frame.getHitTestResults(this.hitTestSource);
+
               if (hitTestResults.length > 0) {
                 const hitPose = hitTestResults[0].getPose(this.localSpace);
                 if (hitPose) {
@@ -55,6 +57,7 @@
       vr-mode-ui="enabled: false"
       embedded
       renderer="logarithmicDepthBuffer: true;"
+      xrweb="ar: true; vr: false; magicWindow: false;"
     >
       <a-camera position="0 0 0"></a-camera>
       <a-box id="hit-test-box" color="red" depth="0.5" height="0.5" width="0.5" ar-hit-test visible="false"></a-box>
