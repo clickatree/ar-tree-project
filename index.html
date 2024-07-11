@@ -4,55 +4,67 @@
     <meta charset="UTF-8">
     <title>Markerless AR Tree Project</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
     <script>
       AFRAME.registerComponent('ar-hit-test', {
         init: function () {
-          const sceneEl = this.el.sceneEl;
-          const hitTestEl = this.el;
-          const hitTestSource = new XRHitTestSourceRequest();
+          const el = this.el;
 
-          sceneEl.addEventListener('enter-vr', function () {
-            const xrSession = sceneEl.renderer.xr.getSession();
-            xrSession.requestReferenceSpace('viewer').then((refSpace) => {
-              xrSession.requestHitTestSource({ space: refSpace }).then((source) => {
-                hitTestSource.source = source;
-              });
+          el.sceneEl.renderer.xr.addEventListener('sessionstart', async function () {
+            const session = el.sceneEl.renderer.xr.getSession();
+
+            // Reference space for the hit test
+            const viewerSpace = await session.requestReferenceSpace('viewer');
+            const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
+
+            const localSpace = await session.requestReferenceSpace('local-floor');
+
+            el.setAttribute('visible', 'false');
+
+            // Add an event listener for the select event
+            session.addEventListener('select', () => {
+              if (el.getAttribute('visible')) {
+                const clone = el.cloneNode();
+                el.sceneEl.appendChild(clone);
+                clone.setAttribute('position', el.getAttribute('position'));
+              }
             });
-            xrSession.addEventListener('select', function () {
-              hitTestEl.emit('hit', { position: hitTestEl.object3D.position });
+
+            // On each XR frame, get hit test results
+            el.sceneEl.addEventListener('xrframe', (event) => {
+              const frame = event.detail;
+
+              const hitTestResults = frame.getHitTestResults(hitTestSource);
+
+              if (hitTestResults.length > 0) {
+                const referenceSpace = el.sceneEl.renderer.xr.getReferenceSpace();
+                const hitPose = hitTestResults[0].getPose(referenceSpace);
+
+                el.object3D.position.copy(hitPose.transform.position);
+                el.object3D.visible = true;
+                el.setAttribute('visible', 'true');
+              } else {
+                el.object3D.visible = false;
+                el.setAttribute('visible', 'false');
+              }
             });
           });
-        },
-        tick: function () {
-          const sceneEl = this.el.sceneEl;
-          const xrSession = sceneEl.renderer.xr.getSession();
-          const frame = sceneEl.frame;
-          const hitTestSource = this.hitTestSource;
-
-          if (xrSession && frame) {
-            const hitTestResults = frame.getHitTestResults(hitTestSource.source);
-            if (hitTestResults.length > 0) {
-              const referenceSpace = sceneEl.renderer.xr.getReferenceSpace();
-              const hit = hitTestResults[0];
-              const hitPose = hit.getPose(referenceSpace);
-              this.el.object3D.position.copy(hitPose.transform.position);
-              this.el.object3D.visible = true;
-            }
-          }
         },
       });
     </script>
   </head>
   <body style="margin: 0; overflow: hidden;">
-    <a-scene vr-mode-ui="enabled: false" renderer="logarithmicDepthBuffer: true;">
-      <a-entity camera look-controls wasd-controls></a-entity>
-      <a-entity ar-hit-test>
-        <a-gltf-model id="tree-model" src="url(Fulltrees.glb)" scale="0.5 0.5 0.5" visible="false"></a-gltf-model>
-      </a-entity>
+    <a-scene
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+      renderer="logarithmicDepthBuffer: true;"
+    >
+      <a-entity camera look-controls></a-entity>
+      <a-entity id="tree-model" gltf-model="url(Fulltrees.glb)" scale="0.5 0.5 0.5" ar-hit-test></a-entity>
     </a-scene>
   </body>
 </html>
+
 
 
 
