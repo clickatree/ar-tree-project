@@ -9,7 +9,10 @@
         init: function () {
           const el = this.el;
 
+          console.log('Component initialized');
+
           el.sceneEl.renderer.xr.addEventListener('sessionstart', async function () {
+            console.log('Session started');
             const session = el.sceneEl.renderer.xr.getSession();
 
             // Reference space for the hit test
@@ -22,6 +25,7 @@
 
             // Add an event listener for the select event
             session.addEventListener('select', () => {
+              console.log('Select event');
               if (el.getAttribute('visible')) {
                 const clone = el.cloneNode();
                 el.sceneEl.appendChild(clone);
@@ -32,6 +36,7 @@
             // On each XR frame, get hit test results
             el.sceneEl.addEventListener('xrframe', (event) => {
               const frame = event.detail;
+              console.log('XR frame');
 
               const hitTestResults = frame.getHitTestResults(hitTestSource);
 
@@ -42,9 +47,11 @@
                 el.object3D.position.copy(hitPose.transform.position);
                 el.object3D.visible = true;
                 el.setAttribute('visible', 'true');
+                console.log('Hit test successful');
               } else {
                 el.object3D.visible = false;
                 el.setAttribute('visible', 'false');
+                console.log('No hit test results');
               }
             });
           });
@@ -56,7 +63,6 @@
     <a-scene
       vr-mode-ui="enabled: false"
       embedded
-      arjs="sourceType: webcam; debugUIEnabled: false;"
       renderer="logarithmicDepthBuffer: true;"
     >
       <a-entity camera look-controls></a-entity>
@@ -64,6 +70,8 @@
     </a-scene>
   </body>
 </html>
+
+
 
 
 
