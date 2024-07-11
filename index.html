@@ -61,31 +61,41 @@
     const modelViewer = document.getElementById('tree-viewer');
     const arButton = document.getElementById('ar-button');
 
-    const os = getMobileOS();
-    if (os === 'Android') {
-      modelViewer.scale = '0.1 0.1 0.1';
-    } else if (os === 'iOS') {
-      modelViewer.scale = '1 1 1';
-    }
-
-    arButton.addEventListener('click', () => {
-      modelViewer.activateAR();
-    });
-
     function getMobileOS() {
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
       if (/android/i.test(userAgent)) {
         return 'Android';
       }
-      if (/iPad|iPhone|iPod/.test(userAgent) ||
+      if (/iPad|iPhone|iPod/.test(userAgent) || 
           (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
         return 'iOS';
       }
       return 'Other';
     }
+
+    const os = getMobileOS();
+
+    if (os === 'Android') {
+      modelViewer.addEventListener('quick-look-button-tapped', () => {
+        modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+      });
+      modelViewer.addEventListener('scene-viewer-button-tapped', () => {
+        modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+      });
+      modelViewer.addEventListener('enter-webxr', () => {
+        modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+      });
+    } else if (os === 'iOS') {
+      modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+    }
+
+    arButton.addEventListener('click', () => {
+      modelViewer.activateAR();
+    });
   </script>
 </body>
 </html>
+
 
 
 
