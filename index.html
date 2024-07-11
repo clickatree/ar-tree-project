@@ -11,6 +11,7 @@
           const scene = this.el.sceneEl;
           
           scene.addEventListener('enter-vr', async () => {
+            console.log('Entering VR');
             const session = scene.renderer.xr.getSession();
             const viewerSpace = await session.requestReferenceSpace('viewer');
             const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
@@ -32,6 +33,7 @@
                     z: hitPose.transform.position.z,
                   });
                   el.setAttribute('visible', true);
+                  console.log('Hit test successful');
                 }
               }
             });
@@ -42,6 +44,7 @@
             this.hitTestSource = null;
             this.localSpace = null;
             el.setAttribute('visible', false);
+            console.log('Exiting VR');
           });
         },
       });
