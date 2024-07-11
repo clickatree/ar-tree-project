@@ -2,13 +2,54 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Minimal A-Frame Test</title>
+    <title>Markerless AR Tree Project</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+    <script>
+      AFRAME.registerComponent('ar-hit-test', {
+        init: function () {
+          const sceneEl = this.el.sceneEl;
+          const hitTestEl = this.el;
+          const hitTestSource = new XRHitTestSourceRequest();
+
+          sceneEl.addEventListener('enter-vr', function () {
+            const xrSession = sceneEl.renderer.xr.getSession();
+            xrSession.requestReferenceSpace('viewer').then((refSpace) => {
+              xrSession.requestHitTestSource({ space: refSpace }).then((source) => {
+                hitTestSource.source = source;
+              });
+            });
+            xrSession.addEventListener('select', function () {
+              hitTestEl.emit('hit', { position: hitTestEl.object3D.position });
+            });
+          });
+        },
+        tick: function () {
+          const sceneEl = this.el.sceneEl;
+          const xrSession = sceneEl.renderer.xr.getSession();
+          const frame = sceneEl.frame;
+          const hitTestSource = this.hitTestSource;
+
+          if (xrSession && frame) {
+            const hitTestResults = frame.getHitTestResults(hitTestSource.source);
+            if (hitTestResults.length > 0) {
+              const referenceSpace = sceneEl.renderer.xr.getReferenceSpace();
+              const hit = hitTestResults[0];
+              const hitPose = hit.getPose(referenceSpace);
+              this.el.object3D.position.copy(hitPose.transform.position);
+              this.el.object3D.visible = true;
+            }
+          }
+        },
+      });
+    </script>
   </head>
-  <body>
-    <a-scene>
-      <a-box position="0 1.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
-      <a-sky color="#ECECEC"></a-sky>
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene vr-mode-ui="enabled: false" renderer="logarithmicDepthBuffer: true;">
+      <a-entity camera look-controls wasd-controls></a-entity>
+      <a-entity ar-hit-test>
+        <a-gltf-model id="tree-model" src="url(Fulltrees.glb)" scale="0.5 0.5 0.5" visible="false"></a-gltf-model>
+      </a-entity>
     </a-scene>
   </body>
 </html>
