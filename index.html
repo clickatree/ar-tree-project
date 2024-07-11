@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8">
+    <title>AR Tree Project</title>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
       body, html {
@@ -17,16 +19,45 @@
         top: 0;
         left: 0;
       }
+      .ar-button {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        z-index: 10;
+        padding: 10px 20px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
     <model-viewer
       src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test2.glb"
       ar
+      ar-modes="scene-viewer quick-look webxr"
+      camera-controls
+      alt="A 3D model of a tree"
+      shadow-intensity="1"
+      auto-rotate
       scale="0.1 0.1 0.1">
     </model-viewer>
+    <button class="ar-button" id="ar-button">View in AR</button>
+
+    <script>
+      const modelViewer = document.querySelector('model-viewer');
+      const arButton = document.getElementById('ar-button');
+
+      arButton.addEventListener('click', () => {
+        modelViewer.activateAR();
+      });
+    </script>
   </body>
 </html>
+
 
 
 
