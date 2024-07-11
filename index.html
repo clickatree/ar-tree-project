@@ -1,69 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>WebXR AR Test</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script>
-      AFRAME.registerComponent('ar-hit-test', {
-        init: function () {
-          const el = this.el;
-          const scene = this.el.sceneEl;
-
-          scene.addEventListener('enter-vr', async () => {
-            console.log('Entering VR');
-            const session = scene.renderer.xr.getSession();
-
-            const viewerSpace = await session.requestReferenceSpace('viewer');
-            const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
-            const localSpace = await session.requestReferenceSpace('local-floor');
-
-            this.viewerSpace = viewerSpace;
-            this.hitTestSource = hitTestSource;
-            this.localSpace = localSpace;
-
-            session.addEventListener('select', (event) => {
-              const frame = event.frame;
-              const hitTestResults = frame.getHitTestResults(this.hitTestSource);
-
-              if (hitTestResults.length > 0) {
-                const hitPose = hitTestResults[0].getPose(this.localSpace);
-                if (hitPose) {
-                  el.setAttribute('position', {
-                    x: hitPose.transform.position.x,
-                    y: hitPose.transform.position.y,
-                    z: hitPose.transform.position.z,
-                  });
-                  el.setAttribute('visible', true);
-                  console.log('Hit test successful');
-                }
-              }
-            });
-          });
-
-          scene.addEventListener('exit-vr', () => {
-            this.viewerSpace = null;
-            this.hitTestSource = null;
-            this.localSpace = null;
-            el.setAttribute('visible', false);
-            console.log('Exiting VR');
-          });
-        },
-      });
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Tree Project</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   </head>
-  <body style="margin: 0; overflow: hidden;">
-    <a-scene
-      vr-mode-ui="enabled: false"
-      embedded
-      renderer="logarithmicDepthBuffer: true;"
-      xrweb="ar: true; vr: false; magicWindow: false;"
-    >
-      <a-camera position="0 0 0"></a-camera>
-      <a-box id="hit-test-box" color="red" depth="0.5" height="0.5" width="0.5" ar-hit-test visible="false"></a-box>
-    </a-scene>
+  <body>
+    <model-viewer
+      src="Fulltrees.glb"
+      ar
+      ar-modes="scene-viewer webxr quick-look"
+      camera-controls
+      environment-image="neutral"
+      poster="poster.png"
+      alt="A 3D model of a tree"
+      shadow-intensity="1"
+      auto-rotate
+      ar-scale="fixed"
+      style="width: 100%; height: 100vh;"
+    ></model-viewer>
   </body>
 </html>
+
 
 
 
