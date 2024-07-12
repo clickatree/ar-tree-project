@@ -46,31 +46,35 @@
   <div class="header">
     <img src="https://www.forum-csr.net/global/images/cms/Logos/click_a_tree_official_logo_horizontal_png_5_1.png" alt="Click a Tree Logo">
   </div>
-  <model-viewer
+  <model-viewer id="tree-viewer"
     src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test3.glb"
     ar
-    ar-modes="scene-viewer"
+    ar-modes="scene-viewer quick-look webxr"
     camera-controls
     alt="A 3D model of a tree"
     shadow-intensity="1"
-    auto-rotate
-    scale="0.1 0.1 0.1">
-  </model-viewer>
-  <model-viewer
-    src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test3.glb"
-    ar
-    ar-modes="quick-look"
-    camera-controls
-    alt="A 3D model of a tree"
-    shadow-intensity="1"
-    auto-rotate
-    scale="1 1 1">
+    auto-rotate>
   </model-viewer>
   <button class="ar-button" id="ar-button">View in AR</button>
 
   <script>
-    const modelViewer = document.querySelector('model-viewer');
+    const modelViewer = document.getElementById('tree-viewer');
     const arButton = document.getElementById('ar-button');
+
+    function adjustScaleForARModes() {
+      const arModes = modelViewer.getAttribute('ar-modes');
+      if (arModes.includes('scene-viewer')) {
+        modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+      } else if (arModes.includes('quick-look')) {
+        modelViewer.setAttribute('scale', '0.1 0.1 0.1');
+      }
+    }
+
+    modelViewer.addEventListener('ar-status', (event) => {
+      if (event.detail.status === 'ready') {
+        adjustScaleForARModes();
+      }
+    });
 
     arButton.addEventListener('click', () => {
       modelViewer.activateAR();
@@ -78,6 +82,7 @@
   </script>
 </body>
 </html>
+
 
 
 
