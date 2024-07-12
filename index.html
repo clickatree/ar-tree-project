@@ -48,14 +48,14 @@
     </div>
     <model-viewer
       id="tree-viewer"
-      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test3.glb"
+      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb"
       ar
       ar-modes="scene-viewer quick-look webxr"
       camera-controls
       alt="A 3D model of a tree"
       shadow-intensity="1"
       auto-rotate
-      scale="0.1 0.1 0.1">
+      scale="1 1 1">
     </model-viewer>
     <button class="ar-button" id="ar-button">View in AR</button>
 
@@ -64,7 +64,7 @@
       const arButton = document.getElementById('ar-button');
 
       arButton.addEventListener('click', () => {
-        modelViewer.setAttribute('scale', '0.1 0.1 0.1');  // Ensure the scale is set
+        modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
         modelViewer.activateAR();
       });
     </script>
