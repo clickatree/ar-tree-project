@@ -48,14 +48,15 @@
     </div>
     <model-viewer
       id="tree-viewer"
-      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test123.glb"
+      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test344.glb"
       ar
       ar-modes="scene-viewer quick-look webxr"
       camera-controls
       alt="A 3D model of a tree"
       shadow-intensity="1"
       auto-rotate
-      scale="1 1 1">
+      scale="1 1 1"
+      animation-name="Mountain-puma_Idle_Standing">
     </model-viewer>
     <button class="ar-button" id="ar-button">View in AR</button>
 
@@ -67,9 +68,18 @@
         modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
         modelViewer.activateAR();
       });
+
+      // Überprüfe, ob Animationen verfügbar sind und spiele sie ab
+      modelViewer.addEventListener('load', () => {
+        const availableAnimations = modelViewer.availableAnimations;
+        if (availableAnimations.length > 0) {
+          modelViewer.animationName = availableAnimations[0]; // Das erste verfügbare Animation verwenden
+        }
+      });
     </script>
   </body>
 </html>
+
 
 
 
