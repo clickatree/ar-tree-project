@@ -16,10 +16,16 @@
         align-items: center;
       }
       .header {
-        margin-top: 80px; /* Verschiebt das Logo weiter nach unten */
+        margin-top: 40px; /* Verschiebt das Logo weiter nach unten */
+        text-align: center;
       }
       .header img {
         width: 600px; /* Vergrößert das Logo um das 1.5-fache der doppelten Größe */
+      }
+      .message {
+        margin: 20px;
+        font-size: 24px;
+        text-align: center;
       }
       model-viewer {
         width: 100vw;
@@ -46,6 +52,7 @@
     <div class="header">
       <img src="https://www.forum-csr.net/global/images/cms/Logos/click_a_tree_official_logo_horizontal_png_5_1.png" alt="Click a Tree Logo">
     </div>
+    <div class="message" id="message">Danke, dass du einen Baum gepflanzt hast!</div>
     <model-viewer
       id="tree-viewer"
       src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb"
@@ -63,6 +70,23 @@
       const modelViewer = document.getElementById('tree-viewer');
       const arButton = document.getElementById('ar-button');
 
+      // Funktion, um URL-Parameter auszulesen
+      function getQueryParameter(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+      }
+
+      // Personalisierte Nachricht anzeigen
+      function displayPersonalizedMessage() {
+        const userName = getQueryParameter('user');
+        const messageElement = document.getElementById('message');
+        if (userName) {
+          messageElement.innerText = `Danke, ${userName}, dass du einen Baum gepflanzt hast!`;
+        }
+      }
+
+      displayPersonalizedMessage();
+
       arButton.addEventListener('click', () => {
         modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
         modelViewer.activateAR();
@@ -70,6 +94,7 @@
     </script>
   </body>
 </html>
+
 
 
 
