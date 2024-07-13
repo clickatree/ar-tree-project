@@ -29,12 +29,8 @@
       white-space: nowrap;
       overflow: hidden;
       border-right: 3px solid;
-      width: 0;
-      animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
-    }
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 22em }
+      width: 22ch; /* Breite der Nachricht */
+      animation: blink-caret 0.75s step-end infinite;
     }
     @keyframes blink-caret {
       from, to { border-color: transparent }
@@ -106,7 +102,7 @@
             setTimeout(() => {
               messageElement.innerHTML = '';
               i = 0;
-              setTimeout(typeWriter, 1000);  // Start typing again after 1 second pause
+              setTimeout(typeWriter, 100);  // Start typing again after 1 second pause
             }, 2000);  // Pause for 2 seconds before clearing and starting again
           }
         }
