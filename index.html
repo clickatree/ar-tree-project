@@ -22,6 +22,11 @@
     .header img {
       width: 600px; /* Vergrößert das Logo um das 1.5-fache der doppelten Größe */
     }
+    .message-container {
+      display: flex;
+      align-items: center;
+      height: 40px;
+    }
     .message {
       margin: 20px;
       font-size: 24px;
@@ -29,8 +34,11 @@
       white-space: nowrap;
       overflow: hidden;
       border-right: 3px solid;
-      width: 22ch; /* Breite der Nachricht */
-      animation: blink-caret 0.75s step-end infinite;
+      animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 22ch } /* Adjust to the length of your message */
     }
     @keyframes blink-caret {
       from, to { border-color: transparent }
@@ -61,7 +69,9 @@
   <div class="header">
     <img src="https://www.forum-csr.net/global/images/cms/Logos/click_a_tree_official_logo_horizontal_png_5_1.png" alt="Click a Tree Logo">
   </div>
-  <div class="message" id="message"></div>
+  <div class="message-container">
+    <div class="message" id="message"></div>
+  </div>
   <model-viewer
     id="tree-viewer"
     src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb"
