@@ -124,13 +124,13 @@
     displayPersonalizedMessage();
 
     arButton.addEventListener('click', () => {
+      modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test10.glb'); // Wechseln zur AR-Ansicht
       modelViewer.activateAR();
     });
 
-    // Modell zurücksetzen, wenn der AR-Modus beendet wird
     modelViewer.addEventListener('ar-status', (event) => {
       if (event.detail.status === 'not-presenting') {
-        modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test10.glb');
+        modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb'); // Zurück zur 3D-Ansicht
       }
     });
   </script>
