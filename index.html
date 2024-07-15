@@ -16,11 +16,11 @@
       align-items: center;
     }
     .header {
-      margin-top: 40px;
+      margin-top: 40px; /* Verschiebt das Logo weiter nach unten */
       text-align: center;
     }
     .header img {
-      width: 600px;
+      width: 600px; /* Vergrößert das Logo um das 1.5-fache der doppelten Größe */
     }
     .message-container {
       display: flex;
@@ -34,12 +34,11 @@
       white-space: nowrap;
       overflow: hidden;
       border-right: 3px solid;
-      width: 22ch;
-      animation: blink-caret 0.75s step-end infinite;
+      animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
     }
     @keyframes typing {
       from { width: 0 }
-      to { width: 22ch }
+      to { width: 22ch } /* Adjust to the length of your message */
     }
     @keyframes blink-caret {
       from, to { border-color: transparent }
@@ -47,7 +46,7 @@
     }
     model-viewer {
       width: 100vw;
-      height: calc(100vh - 240px);
+      height: calc(100vh - 240px); /* Adjusting height to accommodate the larger header */
       position: relative;
     }
     .ar-button {
@@ -56,12 +55,12 @@
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;
-      padding: 28.8px 57.6px;
+      padding: 28.8px 57.6px; /* Erhöht um weitere 20% von 24px 48px */
       background-color: rgba(0, 0, 0, 0.5);
       color: white;
       border: none;
       border-radius: 5px;
-      font-size: 33.6px;
+      font-size: 33.6px; /* Erhöht um weitere 20% von 28px */
       cursor: pointer;
     }
   </style>
@@ -76,14 +75,13 @@
   <model-viewer
     id="tree-viewer"
     src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test15.glb"
-    ios-src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test15.usdz"
     ar
     ar-modes="scene-viewer quick-look webxr"
     camera-controls
     alt="A 3D model of a tree"
     shadow-intensity="1"
     auto-rotate
-    scale="0.1 0.1 0.1">
+    scale="1 1 1">
   </model-viewer>
   <button class="ar-button" id="ar-button">View in AR</button>
 
@@ -106,7 +104,6 @@
         let i = 0;
 
         function typeWriter() {
-          if (i === 0) messageElement.innerHTML = ''; // Ensure the message is cleared at the beginning
           if (i < messageText.length) {
             messageElement.innerHTML += messageText.charAt(i);
             i++;
@@ -127,6 +124,7 @@
     displayPersonalizedMessage();
 
     arButton.addEventListener('click', () => {
+      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
       modelViewer.activateAR();
     });
   </script>
