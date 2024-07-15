@@ -74,7 +74,7 @@
   </div>
   <model-viewer
     id="tree-viewer"
-    src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb"
+    src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb"
     ar
     ar-modes="scene-viewer quick-look webxr"
     camera-controls
@@ -124,8 +124,14 @@
     displayPersonalizedMessage();
 
     arButton.addEventListener('click', () => {
-      modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test10.glb'); // Wechseln zur AR-Ansicht
+      modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/ar-view.glb'); // Wechseln zur AR-Ansicht
       modelViewer.activateAR();
+    });
+
+    modelViewer.addEventListener('ar-status', (event) => {
+      if (event.detail.status === 'not-presenting') {
+        modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb'); // Zurück zur 3D-Ansicht
+      }
     });
   </script>
 </body>
