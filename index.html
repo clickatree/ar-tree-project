@@ -124,16 +124,24 @@
     displayPersonalizedMessage();
 
     arButton.addEventListener('click', () => {
+      console.log('Switching to AR model');
       modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/ar-view.glb'); // Wechseln zur AR-Ansicht
       modelViewer.activateAR();
     });
 
     modelViewer.addEventListener('ar-status', (event) => {
       if (event.detail.status === 'not-presenting') {
+        console.log('Returning to 3D model');
         modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb'); // Zurück zur 3D-Ansicht
       }
+    });
+
+    // Debugging: Event Listener für Model Loading
+    modelViewer.addEventListener('load', () => {
+      console.log('Model loaded:', modelViewer.getAttribute('src'));
     });
   </script>
 </body>
 </html>
+
 
