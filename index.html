@@ -127,16 +127,10 @@
       modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/ar-view.glb'); // Wechseln zur AR-Ansicht
       modelViewer.activateAR();
     });
-
-    modelViewer.addEventListener('ar-status', (event) => {
-      if (event.detail.status === 'not-presenting') {
-        // Seite neu laden, um zum ursprünglichen 3D-Modell zurückzukehren
-        window.location.reload();
-      }
-    });
   </script>
 </body>
 </html>
+
 
 
 
