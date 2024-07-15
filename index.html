@@ -130,13 +130,14 @@
 
     modelViewer.addEventListener('ar-status', (event) => {
       if (event.detail.status === 'not-presenting') {
-        // Wechsel zurück zum 3D-Modell, wenn der AR-Modus beendet wird
-        modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb');
+        // Seite neu laden, um zum ursprünglichen 3D-Modell zurückzukehren
+        window.location.reload();
       }
     });
   </script>
 </body>
 </html>
+
 
 
 
