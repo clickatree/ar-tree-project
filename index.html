@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>AR Tree Project</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
   <style>
     body, html {
       margin: 0;
@@ -15,75 +14,34 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      background: black;
-    }
-    #video-container, #ar-container {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-    }
-    #video-container.active, #ar-container.active {
-      display: flex;
-    }
-    video {
-      width: 100%;
-      height: auto;
-      max-height: 100%;
-      object-fit: contain;
-    }
-    .overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 36px;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 10px;
-      border-radius: 5px;
-      font-family: 'Oswald', sans-serif;
-      text-align: center;
-      text-transform: uppercase;
-      line-height: 1.2;
-      display: none;
-      white-space: pre-wrap;
     }
     .header {
-      margin-top: 40px;
+      margin-top: 40px; /* Verschiebt das Logo weiter nach unten */
       text-align: center;
     }
     .header img {
-      width: 600px;
+      width: 600px; /* Vergrößert das Logo um das 1.5-fache der doppelten Größe */
     }
     .message-container {
       display: flex;
       align-items: center;
       height: 40px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
     }
     .message {
-      margin: 20px;
       font-size: 24px;
       text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 3px solid;
-      animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 10px;
     }
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 22ch }
-    }
-    @keyframes blink-caret {
-      from, to { border-color: transparent }
-      50% { border-color: black }
-    }
-    model-viewer {
+    video {
       width: 100vw;
-      height: calc(100vh - 240px);
-      position: relative;
+      height: calc(100vh - 240px); /* Adjusting height to accommodate the larger header */
     }
     .ar-button {
       position: absolute;
@@ -91,163 +49,81 @@
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;
-      padding: 28.8px 57.6px;
+      padding: 28.8px 57.6px; /* Erhöht um weitere 20% von 24px 48px */
       background-color: rgba(0, 0, 0, 0.5);
       color: white;
       border: none;
       border-radius: 5px;
-      font-size: 33.6px;
-      cursor: pointer;
-    }
-    .custom-controls {
-      position: relative;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      padding: 10px 0;
-    }
-    .control-button {
-      background-color: rgba(0, 0, 0, 0.5);
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 36px;
-      padding: 15px 30px;
+      font-size: 33.6px; /* Erhöht um weitere 20% von 28px */
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div id="video-container" class="active">
-    <video id="personalized-video" poster="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2-thumbnail.jpg" playsinline>
-      <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <div class="overlay" id="overlay"></div>
-    <div class="custom-controls">
-      <button class="control-button" id="rewind-button">-10s</button>
-      <button class="control-button" id="play-pause-button">Play</button>
-      <button class="control-button" id="forward-button">+10s</button>
-    </div>
+  <div class="header">
+    <img src="https://www.forum-csr.net/global/images/cms/Logos/click_a_tree_official_logo_horizontal_png_5_1.png" alt="Click a Tree Logo">
   </div>
-
-  <div id="ar-container">
-    <div class="header">
-      <img src="https://www.forum-csr.net/global/images/cms/Logos/click_a_tree_official_logo_horizontal_png_5_1.png" alt="Click a Tree Logo">
-    </div>
-    <div class="message-container">
-      <div class="message" id="message"></div>
-    </div>
-    <model-viewer
-      id="tree-viewer"
-      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb"
-      ar
-      ar-modes="scene-viewer quick-look webxr"
-      camera-controls
-      alt="A 3D model of a tree"
-      shadow-intensity="1"
-      auto-rotate
-      scale="1 1 1">
-    </model-viewer>
-    <button class="ar-button" id="ar-button">View in AR</button>
+  <div class="message-container" id="message-container">
+    <div class="message" id="message"></div>
   </div>
+  <video id="intro-video" controls>
+    <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2.mp4" type="video/mp4">
+  </video>
+  <model-viewer
+    id="tree-viewer"
+    src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb"
+    ar
+    ar-modes="scene-viewer quick-look webxr"
+    camera-controls
+    alt="A 3D model of a tree"
+    shadow-intensity="1"
+    auto-rotate
+    scale="1 1 1">
+  </model-viewer>
+  <button class="ar-button" id="ar-button" style="display: none;">View in AR</button>
 
   <script>
-    const video = document.getElementById('personalized-video');
-    const overlay = document.getElementById('overlay');
-    const videoContainer = document.getElementById('video-container');
-    const arContainer = document.getElementById('ar-container');
-    const modelViewer = document.getElementById('tree-viewer');
+    const video = document.getElementById('intro-video');
+    const messageContainer = document.getElementById('message-container');
+    const messageElement = document.getElementById('message');
     const arButton = document.getElementById('ar-button');
-    const playPauseButton = document.getElementById('play-pause-button');
-    const rewindButton = document.getElementById('rewind-button');
-    const forwardButton = document.getElementById('forward-button');
 
-    function getQueryParameter(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
-
-    const userName = getQueryParameter('user');
-    const personalizedText1 = `DU, ${userName}, BIST DIESER HELD!`;
-    const personalizedText2 = `NUR DU, ${userName}, KANNST DEN UNTERSCHIED MACHEN!`;
+    const messages = [
+      { start: 15.35, end: 19.37, text: 'DU, [Name von URL], BIST DIESER HELD!' },
+      { start: 28.36, end: 30.44, text: 'NUR DU, [Name von URL], KANNST DEN UNTERSCHIED MACHEN!' }
+    ];
 
     video.addEventListener('timeupdate', () => {
-      if (video.currentTime >= 15.35 && video.currentTime <= 19.37) {
-        overlay.textContent = personalizedText1;
-        overlay.style.display = 'block';
-      } else if (video.currentTime >= 28.36 && video.currentTime <= 30.44) {
-        overlay.textContent = personalizedText2;
-        overlay.style.display = 'block';
-      } else {
-        overlay.style.display = 'none';
+      const currentTime = video.currentTime;
+      let messageDisplayed = false;
+
+      messages.forEach(message => {
+        if (currentTime >= message.start && currentTime <= message.end) {
+          messageElement.textContent = message.text.replace('[Name von URL]', getQueryParameter('user'));
+          messageContainer.style.display = 'flex';
+          messageDisplayed = true;
+        }
+      });
+
+      if (!messageDisplayed) {
+        messageContainer.style.display = 'none';
       }
     });
 
     video.addEventListener('ended', () => {
-      videoContainer.classList.remove('active');
-      arContainer.classList.add('active');
+      video.style.display = 'none';
+      arButton.style.display = 'block';
+      document.querySelector('model-viewer').style.display = 'block';
     });
 
-    playPauseButton.addEventListener('click', () => {
-      if (video.paused) {
-        video.play();
-        playPauseButton.textContent = 'Pause';
-      } else {
-        video.pause();
-        playPauseButton.textContent = 'Play';
-      }
-    });
-
-    rewindButton.addEventListener('click', () => {
-      video.currentTime = Math.max(0, video.currentTime - 10);
-    });
-
-    forwardButton.addEventListener('click', () => {
-      video.currentTime = Math.min(video.duration, video.currentTime + 10);
-    });
-
-    function displayPersonalizedMessage() {
-      const messageElement = document.getElementById('message');
-      if (userName) {
-        const messageText = `DANKE, ${userName}, DASS DU EINEN BAUM GEpflanzt HAST!`;
-        let i = 0;
-
-        function typeWriter() {
-          if (i < messageText.length) {
-            messageElement.innerHTML += messageText.charAt(i);
-            i++;
-            setTimeout(typeWriter, 100);
-          } else {
-            setTimeout(() => {
-              messageElement.innerHTML = '';
-              i = 0;
-              setTimeout(typeWriter, 100);
-            }, 2000);
-          }
-        }
-
-        typeWriter();
-      }
+    function getQueryParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name) || 'Benutzer';
     }
-
-    displayPersonalizedMessage();
-
-    arButton.addEventListener('click', () => {
-      modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/ar-view.glb');
-      modelViewer.activateAR();
-    });
-
-    modelViewer.addEventListener('ar-status', (event) => {
-      if (event.detail.status === 'not-presenting') {
-        modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb');
-      }
-    });
   </script>
 </body>
 </html>
+
 
 
 
