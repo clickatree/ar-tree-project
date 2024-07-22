@@ -63,7 +63,7 @@
       font-size: 33.6px; /* Erhöht um weitere 20% von 28px */
       cursor: pointer;
     }
-    .video-container {
+    .video-link-container {
       position: fixed;
       top: 0;
       left: 0;
@@ -74,10 +74,15 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
     }
-    video {
-      width: 80%;
-      height: auto;
+    .video-link {
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px 20px;
+      border-radius: 5px;
     }
     .overlay {
       position: absolute;
@@ -91,11 +96,8 @@
   </style>
 </head>
 <body>
-  <div class="video-container" id="video-container">
-    <video id="background-video" autoplay muted>
-      <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+  <div class="video-link-container" id="video-link-container">
+    <a href="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2.mp4" class="video-link" id="video-link" target="_blank">Play Video</a>
     <div class="overlay" id="personalized-message"></div>
   </div>
 
@@ -122,8 +124,7 @@
   <script>
     const modelViewer = document.getElementById('tree-viewer');
     const arButton = document.getElementById('ar-button');
-    const videoContainer = document.getElementById('video-container');
-    const videoElement = document.getElementById('background-video');
+    const videoLinkContainer = document.getElementById('video-link-container');
     const mainContent = document.getElementById('main-content');
 
     // Funktion, um URL-Parameter auszulesen
@@ -144,13 +145,15 @@
 
     displayPersonalizedMessage();
 
-    videoElement.onended = function() {
-      videoContainer.style.display = 'none';
+    // Wenn das Video abgespielt wurde, zum Hauptinhalt wechseln
+    const videoLink = document.getElementById('video-link');
+    videoLink.addEventListener('click', () => {
+      videoLinkContainer.style.display = 'none';
       mainContent.style.display = 'block';
       document.querySelector('.message-container').style.display = 'flex';
       modelViewer.style.display = 'block';
       arButton.style.display = 'block';
-    };
+    });
 
     arButton.addEventListener('click', () => {
       modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test10.glb'); // Wechseln zur AR-Ansicht
@@ -165,6 +168,7 @@
   </script>
 </body>
 </html>
+
 
 
 
