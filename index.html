@@ -14,97 +14,28 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-    .header {
-      margin-top: 40px; /* Verschiebt das Logo weiter nach unten */
-      text-align: center;
-    }
-    .header img {
-      width: 600px; /* Vergrößert das Logo um das 1.5-fache der doppelten Größe */
-    }
-    .message-container {
-      display: flex;
-      align-items: center;
-      height: 40px;
-    }
-    .message {
-      margin: 20px;
-      font-size: 24px;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 3px solid;
-      animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
-    }
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 22ch } /* Adjust to the length of your message */
-    }
-    @keyframes blink-caret {
-      from, to { border-color: transparent }
-      50% { border-color: black }
-    }
-    model-viewer {
-      width: 100vw;
-      height: calc(100vh - 240px); /* Adjusting height to accommodate the larger header */
-      position: relative;
-    }
-    .ar-button {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      padding: 28.8px 57.6px; /* Erhöht um weitere 20% von 24px 48px */
-      background-color: rgba(0, 0, 0, 0.5);
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 33.6px; /* Erhöht um weitere 20% von 28px */
-      cursor: pointer;
-    }
-    .video-link-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
       background: black;
-      z-index: 1000; /* Über alles andere legen */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
     }
-    .video-link {
-      color: white;
-      font-size: 24px;
-      text-decoration: none;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 10px 20px;
-      border-radius: 5px;
+    video {
+      width: 100%;
+      height: auto;
+      max-height: 100%;
     }
-    .overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 2em;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    .header, .message-container, model-viewer, .ar-button {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="video-link-container" id="video-link-container">
-    <a href="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2.mp4" class="video-link" id="video-link" target="_blank">Play Video</a>
-    <div class="overlay" id="personalized-message"></div>
-  </div>
+  <video id="intro-video" controls autoplay>
+    <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 
-  <div class="header" id="main-content" style="display: none;">
+  <div class="header">
     <img src="https://www.forum-csr.net/global/images/cms/Logos/click_a_tree_official_logo_horizontal_png_5_1.png" alt="Click a Tree Logo">
   </div>
-  <div class="message-container" style="display: none;">
+  <div class="message-container">
     <div class="message" id="message"></div>
   </div>
   <model-viewer
@@ -116,16 +47,16 @@
     alt="A 3D model of a tree"
     shadow-intensity="1"
     auto-rotate
-    scale="1 1 1"
-    style="display: none;">
+    scale="1 1 1">
   </model-viewer>
-  <button class="ar-button" id="ar-button" style="display: none;">View in AR</button>
+  <button class="ar-button" id="ar-button">View in AR</button>
 
   <script>
     const modelViewer = document.getElementById('tree-viewer');
     const arButton = document.getElementById('ar-button');
-    const videoLinkContainer = document.getElementById('video-link-container');
-    const mainContent = document.getElementById('main-content');
+    const introVideo = document.getElementById('intro-video');
+    const mainContent = document.querySelector('.header');
+    const messageContainer = document.querySelector('.message-container');
 
     // Funktion, um URL-Parameter auszulesen
     function getQueryParameter(name) {
@@ -136,7 +67,7 @@
     // Personalisierte Nachricht anzeigen
     function displayPersonalizedMessage() {
       const userName = getQueryParameter('user');
-      const messageElement = document.getElementById('personalized-message');
+      const messageElement = document.getElementById('message');
       if (userName) {
         const messageText = `Danke, ${userName}, dass du einen Baum gepflanzt hast!`;
         messageElement.textContent = messageText;
@@ -145,12 +76,11 @@
 
     displayPersonalizedMessage();
 
-    // Wenn das Video abgespielt wurde, zum Hauptinhalt wechseln
-    const videoLink = document.getElementById('video-link');
-    videoLink.addEventListener('click', () => {
-      videoLinkContainer.style.display = 'none';
+    // Wenn das Video endet, den Hauptinhalt anzeigen
+    introVideo.addEventListener('ended', () => {
+      introVideo.style.display = 'none';
       mainContent.style.display = 'block';
-      document.querySelector('.message-container').style.display = 'flex';
+      messageContainer.style.display = 'flex';
       modelViewer.style.display = 'block';
       arButton.style.display = 'block';
     });
@@ -168,6 +98,7 @@
   </script>
 </body>
 </html>
+
 
 
 
