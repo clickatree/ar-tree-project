@@ -142,7 +142,7 @@
     </div>
     <model-viewer
       id="tree-viewer"
-      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb"
+      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb"
       ar
       ar-modes="scene-viewer quick-look webxr"
       camera-controls
@@ -187,6 +187,7 @@
     });
 
     video.addEventListener('ended', () => {
+      document.body.style.backgroundColor = "white"; // Change background color to white
       videoContainer.classList.remove('active');
       arContainer.classList.add('active');
     });
@@ -236,43 +237,15 @@
     displayPersonalizedMessage();
 
     arButton.addEventListener('click', () => {
-      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
+      modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/ar-view.glb');
       modelViewer.activateAR();
     });
 
     modelViewer.addEventListener('ar-status', (event) => {
       if (event.detail.status === 'not-presenting') {
-        modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb');  // Reset to 3D view
+        modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb');
       }
     });
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
