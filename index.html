@@ -93,15 +93,39 @@
       font-size: 33.6px;
       cursor: pointer;
     }
+    .custom-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .control-button {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div id="video-container" class="active">
-    <video id="personalized-video" controls autoplay playsinline>
+    <video id="personalized-video" autoplay playsinline>
       <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
     <div class="overlay" id="overlay"></div>
+    <div class="custom-controls">
+      <button class="control-button" id="rewind-button">-10s</button>
+      <button class="control-button" id="play-pause-button">Pause</button>
+      <button class="control-button" id="forward-button">+10s</button>
+    </div>
   </div>
 
   <div id="ar-container">
@@ -132,6 +156,9 @@
     const arContainer = document.getElementById('ar-container');
     const modelViewer = document.getElementById('tree-viewer');
     const arButton = document.getElementById('ar-button');
+    const playPauseButton = document.getElementById('play-pause-button');
+    const rewindButton = document.getElementById('rewind-button');
+    const forwardButton = document.getElementById('forward-button');
 
     // Funktion, um URL-Parameter auszulesen
     function getQueryParameter(name) {
@@ -157,6 +184,27 @@
     video.addEventListener('ended', () => {
       videoContainer.classList.remove('active');
       arContainer.classList.add('active');
+    });
+
+    // Play/Pause button
+    playPauseButton.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+        playPauseButton.textContent = 'Pause';
+      } else {
+        video.pause();
+        playPauseButton.textContent = 'Play';
+      }
+    });
+
+    // Rewind button
+    rewindButton.addEventListener('click', () => {
+      video.currentTime = Math.max(0, video.currentTime - 10);
+    });
+
+    // Forward button
+    forwardButton.addEventListener('click', () => {
+      video.currentTime = Math.min(video.duration, video.currentTime + 10);
     });
 
     // Funktion, um URL-Parameter auszulesen und personalisierte Nachricht anzuzeigen
@@ -199,6 +247,7 @@
   </script>
 </body>
 </html>
+
 
 
 
