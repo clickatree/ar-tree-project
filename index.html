@@ -113,8 +113,8 @@
       color: white;
       border: none;
       border-radius: 5px;
-      font-size: 27px;
-      padding: 15px 30px;
+      font-size: 40px; /* Vergrößert um 50% von 27px */
+      padding: 22.5px 45px; /* Vergrößert um 50% von 15px 30px */
       cursor: pointer;
     }
   </style>
@@ -142,7 +142,7 @@
     </div>
     <model-viewer
       id="tree-viewer"
-      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb"
+      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb"
       ar
       ar-modes="scene-viewer quick-look webxr"
       camera-controls
@@ -175,10 +175,10 @@
     const personalizedText2 = `NUR DU, ${userName}, KANNST DEN UNTERSCHIED MACHEN!`;
 
     video.addEventListener('timeupdate', () => {
-      if (video.currentTime >= 15.26 && video.currentTime <= 19.23) {
+      if (video.currentTime >= 15.26 && video.currentTime <= 19.13) {
         overlay.textContent = personalizedText1;
         overlay.style.display = 'block';
-      } else if (video.currentTime >= 28.20 && video.currentTime <= 30.55) {
+      } else if (video.currentTime >= 28.20 && video.currentTime <= 30.45) {
         overlay.textContent = personalizedText2;
         overlay.style.display = 'block';
       } else {
@@ -187,7 +187,7 @@
     });
 
     video.addEventListener('ended', () => {
-      document.body.style.backgroundColor = "white"; // Change background color to white
+      document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern
       videoContainer.classList.remove('active');
       arContainer.classList.add('active');
     });
@@ -237,15 +237,16 @@
     displayPersonalizedMessage();
 
     arButton.addEventListener('click', () => {
-      modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb');
+      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
       modelViewer.activateAR();
     });
 
     modelViewer.addEventListener('ar-status', (event) => {
       if (event.detail.status === 'not-presenting') {
-        modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb');
+        document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern, wenn zurück aus AR
       }
     });
   </script>
 </body>
 </html>
+
