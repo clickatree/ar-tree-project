@@ -107,22 +107,22 @@
       color: white;
       border: none;
       border-radius: 5px;
-      font-size: 24px;
-      padding: 15px 30px;
+      font-size: 48px;
+      padding: 20px 40px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div id="video-container" class="active">
-    <video id="personalized-video" autoplay playsinline>
+    <video id="personalized-video" playsinline>
       <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
     <div class="overlay" id="overlay"></div>
     <div class="custom-controls">
       <button class="control-button" id="rewind-button">-10s</button>
-      <button class="control-button" id="play-pause-button">Pause</button>
+      <button class="control-button" id="play-pause-button">Play</button>
       <button class="control-button" id="forward-button">+10s</button>
     </div>
   </div>
@@ -246,6 +246,7 @@
   </script>
 </body>
 </html>
+
 
 
 
