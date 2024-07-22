@@ -113,7 +113,7 @@
       color: white;
       border: none;
       border-radius: 5px;
-      font-size: 36px;
+      font-size: 27px;
       padding: 15px 30px;
       cursor: pointer;
     }
@@ -142,7 +142,7 @@
     </div>
     <model-viewer
       id="tree-viewer"
-      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb"
+      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb"
       ar
       ar-modes="scene-viewer quick-look webxr"
       camera-controls
@@ -236,18 +236,19 @@
     displayPersonalizedMessage();
 
     arButton.addEventListener('click', () => {
-      modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/ar-view.glb');
+      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
       modelViewer.activateAR();
     });
 
     modelViewer.addEventListener('ar-status', (event) => {
       if (event.detail.status === 'not-presenting') {
-        modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/3d-view.glb');
+        modelViewer.setAttribute('src', 'https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb');  // Reset to 3D view
       }
     });
   </script>
 </body>
 </html>
+
 
 
 
