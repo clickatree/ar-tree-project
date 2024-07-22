@@ -24,9 +24,21 @@
     .header, .message-container, model-viewer, .ar-button {
       display: none;
     }
+    .personalized-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 2em;
+      text-align: center;
+      display: none; /* Initially hidden */
+      z-index: 1000; /* Ensure it's above everything else */
+    }
   </style>
 </head>
 <body>
+  <div class="personalized-message" id="personalized-message"></div>
   <video id="intro-video" controls autoplay>
     <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2.mp4" type="video/mp4">
     Your browser does not support the video tag.
@@ -57,6 +69,7 @@
     const introVideo = document.getElementById('intro-video');
     const mainContent = document.querySelector('.header');
     const messageContainer = document.querySelector('.message-container');
+    const personalizedMessage = document.getElementById('personalized-message');
 
     // Funktion, um URL-Parameter auszulesen
     function getQueryParameter(name) {
@@ -67,14 +80,37 @@
     // Personalisierte Nachricht anzeigen
     function displayPersonalizedMessage() {
       const userName = getQueryParameter('user');
-      const messageElement = document.getElementById('message');
       if (userName) {
-        const messageText = `Danke, ${userName}, dass du einen Baum gepflanzt hast!`;
-        messageElement.textContent = messageText;
+        const messageText = `DU, ${userName}, bist dieser Held!`;
+        personalizedMessage.textContent = messageText;
       }
     }
 
     displayPersonalizedMessage();
+
+    // Videozeit überwachen und personalisierte Nachrichten einblenden
+    introVideo.addEventListener('timeupdate', () => {
+      const currentTime = introVideo.currentTime;
+
+      // Beispielzeiten für die relevante Szene (in Sekunden)
+      const scenes = [
+        { start: 15.48, end: 19.47 }  // Szene: von Sekunde 15.48 bis 19.47
+      ];
+
+      let messageVisible = false;
+
+      scenes.forEach(scene => {
+        if (currentTime >= scene.start && currentTime <= scene.end) {
+          messageVisible = true;
+        }
+      });
+
+      if (messageVisible) {
+        personalizedMessage.style.display = 'block';
+      } else {
+        personalizedMessage.style.display = 'none';
+      }
+    });
 
     // Wenn das Video endet, den Hauptinhalt anzeigen
     introVideo.addEventListener('ended', () => {
@@ -98,6 +134,7 @@
   </script>
 </body>
 </html>
+
 
 
 
