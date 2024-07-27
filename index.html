@@ -62,26 +62,27 @@
       display: flex;
       align-items: center;
       justify-content: center; /* Zentriert die Nachricht horizontal */
-      height: 60px; /* Höhe der Nachricht erhöht */
+      height: 100px; /* Höhe der Nachricht erhöht */
     }
     .message {
       margin: 20px;
       font-size: 48px; /* Vergrößert die Schriftgröße */
       text-align: center;
-      white-space: nowrap;
+      white-space: pre-wrap; /* Ermöglicht Zeilenumbrüche */
       overflow: hidden;
-      color: #00ff00; /* Grüne Farbe */
-      text-shadow: 0 0 5px #00ff00; /* Glühen-Effekt */
+      color: #D2B48C; /* Hellbraune Farbe */
+      text-shadow: 0 0 5px #D2B48C; /* Glühen-Effekt */
       font-family: 'Courier New', Courier, monospace; /* Ändert die Schriftart */
       animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
+      visibility: hidden; /* Unsichtbar zu Beginn */
     }
     @keyframes typing {
       from { width: 0 }
-      to { width: 22ch }
+      to { width: 100% }
     }
     @keyframes blink-caret {
       from, to { border-color: transparent }
-      50% { border-color: #00ff00 }
+      50% { border-color: #D2B48C }
     }
     model-viewer {
       width: 100vw;
@@ -218,6 +219,7 @@
       if (userName) {
         const messageText = `DANKE, ${userName}, DASS DU EINEN BAUM GEpflanzt HAST!`;
         let i = 0;
+        let firstRun = true;
 
         function typeWriter() {
           if (i < messageText.length) {
@@ -226,10 +228,14 @@
             setTimeout(typeWriter, 100);
           } else {
             setTimeout(() => {
+              if (firstRun) {
+                firstRun = false;
+                messageElement.style.visibility = 'visible'; // Nachricht sichtbar machen
+              }
               messageElement.innerHTML = '';
               i = 0;
-              setTimeout(typeWriter, 100);
-            }, 2000);
+              setTimeout(typeWriter, 100);  // Start typing again after 1 second pause
+            }, 2000);  // Pause for 2 seconds before clearing and starting again
           }
         }
 
