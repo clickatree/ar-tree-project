@@ -85,7 +85,7 @@
     }
     model-viewer {
       width: 100vw;
-      height: calc(100vh - 300px); /* Adjusting height to accommodate the larger message */
+      height: calc(100vh - 240px);
       position: relative;
     }
     .ar-button {
@@ -240,5 +240,19 @@
     displayPersonalizedMessage();
 
     arButton.addEventListener('click', () => {
-      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is
-    
+      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
+      modelViewer.activateAR();
+    });
+
+    modelViewer.addEventListener('ar-status', (event) => {
+      if (event.detail.status === 'not-presenting') {
+        document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern, wenn zurück aus AR
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
