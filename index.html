@@ -61,20 +61,20 @@
     .message-container {
       display: flex;
       align-items: center;
-      justify-content: center; /* Zentriert die Nachricht horizontal */
-      height: 100px; /* Höhe der Nachricht erhöht */
+      justify-content: center;
+      height: 100px;
     }
     .message {
       margin: 20px;
-      font-size: 48px; /* Vergrößert die Schriftgröße */
+      font-size: 48px;
       text-align: center;
-      white-space: pre-wrap; /* Ermöglicht Zeilenumbrüche */
+      white-space: pre-wrap;
       overflow: hidden;
-      color: #D2B48C; /* Hellbraune Farbe */
-      text-shadow: 0 0 5px #D2B48C; /* Glühen-Effekt */
-      font-family: 'Courier New', Courier, monospace; /* Ändert die Schriftart */
+      color: #D2B48C;
+      text-shadow: 0 0 5px #D2B48C;
+      font-family: 'Courier New', Courier, monospace;
       animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
-      visibility: hidden; /* Unsichtbar zu Beginn */
+      visibility: hidden;
     }
     @keyframes typing {
       from { width: 0 }
@@ -117,16 +117,16 @@
       color: white;
       border: none;
       border-radius: 5px;
-      font-size: 40px; /* Vergrößert um 50% von 27px */
-      padding: 22.5px 45px; /* Vergrößert um 50% von 15px 30px */
+      font-size: 40px;
+      padding: 22.5px 45px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div id="video-container" class="active">
-    <video id="personalized-video" poster="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2-thumbnail.jpg" playsinline>
-      <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2.mp4" type="video/mp4">
+    <video id="personalized-video" poster="new-video-thumbnail.jpg" playsinline>
+      <source src="video3.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
     <div class="overlay" id="overlay"></div>
@@ -175,23 +175,32 @@
     }
 
     const userName = getQueryParameter('user');
-    const personalizedText1 = `DU, ${userName}, BIST DIESER HELD!`;
-    const personalizedText2 = `NUR DU, ${userName}, KANNST DEN UNTERSCHIED MACHEN!`;
+    const personalizedText1 = `ORDER FROM ${userName}`;
+    const personalizedText2 = `${userName}`;
+    const personalizedText3 = `${userName}`;
+    const personalizedText4 = `${userName}`;
 
-    video.addEventListener('timeupdate', () => {
-      if (video.currentTime >= 15.48 && video.currentTime <= 19.47) {
-        overlay.textContent = personalizedText1;
-        overlay.style.display = 'block';
-      } else if (video.currentTime >= 28.48 && video.currentTime <= 30.65) {
-        overlay.textContent = personalizedText2;
-        overlay.style.display = 'block';
-      } else {
-        overlay.style.display = 'none';
+    // Function to position and display text
+    function displayPersonalizedText(text, startFrame, endFrame) {
+      return function() {
+        const currentFrame = Math.floor(video.currentTime * 30); // Assuming 30fps
+        if (currentFrame >= startFrame && currentFrame <= endFrame) {
+          overlay.textContent = text;
+          overlay.style.display = 'block';
+        } else {
+          overlay.style.display = 'none';
+        }
       }
-    });
+    }
+
+    // Add event listeners for each personalized text
+    video.addEventListener('timeupdate', displayPersonalizedText(personalizedText1, 33, 57)); // Scene 1
+    video.addEventListener('timeupdate', displayPersonalizedText(personalizedText2, 168, 210)); // Scene 2
+    video.addEventListener('timeupdate', displayPersonalizedText(personalizedText3, 172, 185)); // Scene 3
+    video.addEventListener('timeupdate', displayPersonalizedText(personalizedText4, 223, 248)); // Scene 4
 
     video.addEventListener('ended', () => {
-      document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern
+      document.body.style.backgroundColor = "white";
       videoContainer.classList.remove('active');
       arContainer.classList.add('active');
     });
@@ -214,45 +223,16 @@
       video.currentTime = Math.min(video.duration, video.currentTime + 10);
     });
 
-    function displayPersonalizedMessage() {
-      const messageElement = document.getElementById('message');
-      if (userName) {
-        const messageText = `DANKE, ${userName}, DASS DU EINEN BAUM GEpflanzt HAST!`;
-        let i = 0;
-        let firstRun = true;
-
-        function typeWriter() {
-          if (i < messageText.length) {
-            messageElement.innerHTML += messageText.charAt(i);
-            i++;
-            setTimeout(typeWriter, 100);
-          } else {
-            setTimeout(() => {
-              if (firstRun) {
-                firstRun = false;
-                messageElement.style.visibility = 'visible'; // Nachricht sichtbar machen
-              }
-              messageElement.innerHTML = '';
-              i = 0;
-              setTimeout(typeWriter, 100);  // Start typing again after 1 second pause
-            }, 2000);  // Pause for 2 seconds before clearing and starting again
-          }
-        }
-
-        typeWriter();
-      }
-    }
-
     displayPersonalizedMessage();
 
     arButton.addEventListener('click', () => {
-      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
+      modelViewer.setAttribute('scale', '1 1 1');
       modelViewer.activateAR();
     });
 
     modelViewer.addEventListener('ar-status', (event) => {
       if (event.detail.status === 'not-presenting') {
-        document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern, wenn zurück aus AR
+        document.body.style.backgroundColor = "white";
       }
     });
   </script>
