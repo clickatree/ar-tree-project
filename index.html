@@ -43,6 +43,7 @@
       text-transform: uppercase;
       line-height: 1.2;
       white-space: pre-wrap;
+      display: none;
     }
     .header {
       margin-top: 40px;
@@ -130,185 +131,41 @@
     </div>
   </div>
 
-  <div id="ar-container">
-    <div class="header">
-      <img src="https://www.forum-csr.net/global/images/cms/Logos/click_a_tree_official_logo_horizontal_png_5_1.png" alt="Click a Tree Logo">
-    </div>
-    <div class="message-container">
-      <div class="message" id="message"></div>
-    </div>
-    <model-viewer
-      id="tree-viewer"
-      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb"
-      ar
-      ar-modes="scene-viewer quick-look webxr"
-      camera-controls
-      alt="A 3D model of a tree"
-      shadow-intensity="1"
-      auto-rotate
-      scale="1 1 1">
-    </model-viewer>
-    <button class="ar-button" id="ar-button">View in AR</button>
-  </div>
-
   <script>
     const video = document.getElementById('personalized-video');
     const overlay = document.getElementById('overlay');
-    const videoContainer = document.getElementById('video-container');
-    const arContainer = document.getElementById('ar-container');
-    const modelViewer = document.getElementById('tree-viewer');
-    const arButton = document.getElementById('ar-button');
-    const playPauseButton = document.getElementById('play-pause-button');
-    const rewindButton = document.getElementById('rewind-button');
-    const forwardButton = document.getElementById('forward-button');
+    const frameRate = 30; // Annahme: 30 FPS
 
-    function getQueryParameter(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
-
-    const userName = getQueryParameter('user');
-    const personalizedText1 = `ORDER FROM ${userName}`;
-    const personalizedText2 = `${userName}`;
-    const personalizedText3 = `${userName}`;
-    const personalizedText4 = `${userName}`;
-
-    const trackingData = [
-      {
-        startFrame: 335,
-        endFrame: 406,
-        data: [
-          // Position, Rotation, Skalierung pro Frame
-          { position: [150, 200], rotation: 0, scale: [1, 1] },
-          { position: [152, 202], rotation: 0.5, scale: [1, 1] },
-          // Weitere Daten für jeden Frame
-        ]
-      },
-      {
-        startFrame: 710,
-        endFrame: 850,
-        data: [
-          { position: [300, 400], rotation: -5, scale: [1, 1] },
-          // Weitere Daten für jeden Frame
-        ]
-      },
-      {
-        startFrame: 861,
-        endFrame: 1013,
-        data: [
-          { position: [400, 500], rotation: 2, scale: [1, 1] },
-          // Weitere Daten für jeden Frame
-        ]
-      },
-      {
-        startFrame: 1116,
-        endFrame: 1242,
-        data: [
-          { position: [600, 700], rotation: 1, scale: [1, 1] },
-          // Weitere Daten für jeden Frame
-        ]
-      }
+    // Erste Szene Daten
+    const scene1Data = [
+      { frame: 335, position: { x: 210, y: 290 }, rotation: 0 }, // Beispielwerte
+      { frame: 336, position: { x: 212, y: 292 }, rotation: 0 },
+      { frame: 337, position: { x: 214, y: 294 }, rotation: 0 },
+      // Weitere Frames hinzufügen
+      { frame: 406, position: { x: 290, y: 370 }, rotation: 0 }
     ];
 
-    function updateOverlayText(text, frame) {
-      overlay.textContent = text;
-      const scene = trackingData.find(scene => frame >= scene.startFrame && frame <= scene.endFrame);
-      if (scene) {
-        const data = scene.data[frame - scene.startFrame];
-        if (data) {
-          overlay.style.left = `${data.position[0]}px`;
-          overlay.style.top = `${data.position[1]}px`;
-          overlay.style.transform = `rotate(${data.rotation}deg) scale(${data.scale[0]}, ${data.scale[1]})`;
-          overlay.style.display = 'block';
-        }
+    function updateOverlay(frame) {
+      const data = scene1Data.find(d => d.frame === frame);
+      if (data) {
+        overlay.textContent = `ORDER FROM ${userName}`;
+        overlay.style.left = `${data.position.x}px`;
+        overlay.style.top = `${data.position.y}px`;
+        overlay.style.transform = `rotate(${data.rotation}deg)`;
+        overlay.style.display = 'block';
       } else {
         overlay.style.display = 'none';
       }
     }
 
     video.addEventListener('timeupdate', () => {
-      const currentFrame = Math.floor(video.currentTime * 30); // Beispiel: 30 FPS
-      if (currentFrame >= 335 && currentFrame <= 406) {
-        updateOverlayText(personalizedText1, currentFrame);
-      } else if (currentFrame >= 710 && currentFrame <= 850) {
-        updateOverlayText(personalizedText2, currentFrame);
-      } else if (currentFrame >= 861 && currentFrame <= 1013) {
-        updateOverlayText(personalizedText3, currentFrame);
-      } else if (currentFrame >= 1116 && currentFrame <= 1242) {
-        updateOverlayText(personalizedText4, currentFrame);
-      } else {
-        overlay.style.display = 'none';
-      }
-    });
-
-    video.addEventListener('ended', () => {
-      document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern
-      videoContainer.classList.remove('active');
-      arContainer.classList.add('active');
-    });
-
-    playPauseButton.addEventListener('click', () => {
-      if (video.paused) {
-        video.play();
-        playPauseButton.textContent = 'Pause';
-      } else {
-        video.pause();
-        playPauseButton.textContent = 'Play';
-      }
-    });
-
-    rewindButton.addEventListener('click', () => {
-      video.currentTime = Math.max(0, video.currentTime - 10);
-    });
-
-    forwardButton.addEventListener('click', () => {
-      video.currentTime = Math.min(video.duration, video.currentTime + 10);
-    });
-
-    function displayPersonalizedMessage() {
-      const messageElement = document.getElementById('message');
-      if (userName) {
-        const messageText = `DANKE, ${userName}, DASS DU EINEN BAUM GEpflanzt HAST!`;
-        let i = 0;
-        let firstRun = true;
-
-        function typeWriter() {
-          if (i < messageText.length) {
-            messageElement.innerHTML += messageText.charAt(i);
-            i++;
-            setTimeout(typeWriter, 100);
-          } else {
-            setTimeout(() => {
-              if (firstRun) {
-                firstRun = false;
-                messageElement.style.visibility = 'visible'; // Nachricht sichtbar machen
-              }
-              messageElement.innerHTML = '';
-              i = 0;
-              setTimeout(typeWriter, 100);  // Start typing again after 1 second pause
-            }, 2000);  // Pause for 2 seconds before clearing and starting again
-          }
-        }
-
-        typeWriter();
-      }
-    }
-
-    displayPersonalizedMessage();
-
-    arButton.addEventListener('click', () => {
-      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
-      modelViewer.activateAR();
-    });
-
-    modelViewer.addEventListener('ar-status', (event) => {
-      if (event.detail.status === 'not-presenting') {
-        document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern, wenn zurück aus AR
-      }
+      const currentFrame = Math.floor(video.currentTime * frameRate);
+      updateOverlay(currentFrame);
     });
   </script>
 </body>
 </html>
+
 
 
 
