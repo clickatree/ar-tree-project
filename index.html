@@ -134,24 +134,33 @@
   <script>
     const video = document.getElementById('personalized-video');
     const overlay = document.getElementById('overlay');
-    const frameRate = 30; // Annahme: 30 FPS
+    const playPauseButton = document.getElementById('play-pause-button');
+    const rewindButton = document.getElementById('rewind-button');
+    const forwardButton = document.getElementById('forward-button');
 
-    // Erste Szene Daten
-    const scene1Data = [
-      { frame: 335, position: { x: 210, y: 290 }, rotation: 0 }, // Beispielwerte
-      { frame: 336, position: { x: 212, y: 292 }, rotation: 0 },
-      { frame: 337, position: { x: 214, y: 294 }, rotation: 0 },
-      // Weitere Frames hinzufügen
-      { frame: 406, position: { x: 290, y: 370 }, rotation: 0 }
+    function getQueryParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    const userName = getQueryParameter('user');
+    const personalizedText = `ORDER FROM ${userName}`;
+
+    const trackingData = [
+      // Die Daten aus szene1.txt werden hier in das Array eingefügt
+      { frame: 341, x: 551.609, y: 288.605 },
+      { frame: 342, x: 550.612, y: 288.93 },
+      // Weitere Tracking-Daten
+      { frame: 413, x: 571.975, y: 298.261 },
+      // Das Array muss für alle relevanten Frames gefüllt werden
     ];
 
-    function updateOverlay(frame) {
-      const data = scene1Data.find(d => d.frame === frame);
+    function updateOverlayText(text, frame) {
+      overlay.textContent = text;
+      const data = trackingData.find(d => d.frame === frame);
       if (data) {
-        overlay.textContent = `ORDER FROM ${userName}`;
-        overlay.style.left = `${data.position.x}px`;
-        overlay.style.top = `${data.position.y}px`;
-        overlay.style.transform = `rotate(${data.rotation}deg)`;
+        overlay.style.left = `${data.x}px`;
+        overlay.style.top = `${data.y}px`;
         overlay.style.display = 'block';
       } else {
         overlay.style.display = 'none';
@@ -159,12 +168,31 @@
     }
 
     video.addEventListener('timeupdate', () => {
-      const currentFrame = Math.floor(video.currentTime * frameRate);
-      updateOverlay(currentFrame);
+      const currentFrame = Math.floor(video.currentTime * 30); // 30 FPS als Beispiel
+      updateOverlayText(personalizedText, currentFrame);
+    });
+
+    playPauseButton.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+        playPauseButton.textContent = 'Pause';
+      } else {
+        video.pause();
+        playPauseButton.textContent = 'Play';
+      }
+    });
+
+    rewindButton.addEventListener('click', () => {
+      video.currentTime = Math.max(0, video.currentTime - 10);
+    });
+
+    forwardButton.addEventListener('click', () => {
+      video.currentTime = Math.min(video.duration, video.currentTime + 10);
     });
   </script>
 </body>
 </html>
+
 
 
 
