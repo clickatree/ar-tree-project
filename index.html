@@ -38,12 +38,15 @@
       position: absolute;
       color: white;
       font-size: 36px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
       font-family: 'Oswald', sans-serif;
       text-align: center;
       text-transform: uppercase;
       line-height: 1.2;
-      white-space: pre-wrap;
       display: none;
+      white-space: pre-wrap;
     }
     .header {
       margin-top: 40px;
@@ -131,45 +134,75 @@
     </div>
   </div>
 
+  <div id="ar-container">
+    <div class="header">
+      <img src="https://www.forum-csr.net/global/images/cms/Logos/click_a_tree_official_logo_horizontal_png_5_1.png" alt="Click a Tree Logo">
+    </div>
+    <div class="message-container">
+      <div class="message" id="message"></div>
+    </div>
+    <model-viewer
+      id="tree-viewer"
+      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb"
+      ar
+      ar-modes="scene-viewer quick-look webxr"
+      camera-controls
+      alt="A 3D model of a tree"
+      shadow-intensity="1"
+      auto-rotate
+      scale="1 1 1">
+    </model-viewer>
+    <button class="ar-button" id="ar-button">View in AR</button>
+  </div>
+
   <script>
     const video = document.getElementById('personalized-video');
     const overlay = document.getElementById('overlay');
-    const playPauseButton = document.getElementById('play-pause-button');
-    const rewindButton = document.getElementById('rewind-button');
-    const forwardButton = document.getElementById('forward-button');
+    let frameData = {}; // Will store the frame data from JSON
 
-    function getQueryParameter(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
+    // Fetch the JSON data
+    fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test3.json')
+      .then(response => response.json())
+      .then(data => {
+        frameData = data.frameData;
+      })
+      .catch(error => console.error('Error loading JSON:', error));
 
-    const userName = getQueryParameter('user');
-    const personalizedText = `ORDER FROM ${userName}`;
-
-    const trackingData = [
-      // Die Daten aus szene1.txt werden hier in das Array eingefügt
-      { frame: 341, x: 551.609, y: 288.605 },
-      { frame: 342, x: 550.612, y: 288.93 },
-      // Weitere Tracking-Daten
-      { frame: 413, x: 571.975, y: 298.261 },
-      // Das Array muss für alle relevanten Frames gefüllt werden
-    ];
-
-    function updateOverlayText(text, frame) {
-      overlay.textContent = text;
-      const data = trackingData.find(d => d.frame === frame);
-      if (data) {
-        overlay.style.left = `${data.x}px`;
-        overlay.style.top = `${data.y}px`;
+    // Function to update the overlay based on frame data
+    function updateOverlay(frame) {
+      const frameInfo = frameData.find(item => item.frame === frame);
+      if (frameInfo) {
+        // Calculate the center position for the text
+        const centerX = (frameInfo.corners[0].x + frameInfo.corners[1].x) / 2;
+        const centerY = (frameInfo.corners[0].y + frameInfo.corners[2].y) / 2;
+        overlay.style.left = `${centerX}px`;
+        overlay.style.top = `${centerY}px`;
+        overlay.style.transform = `translate(-50%, -50%) rotate(${calculateRotation(frameInfo.corners)}deg)`;
         overlay.style.display = 'block';
+        overlay.textContent = `ORDER FROM ${getQueryParameter('user')}`;
       } else {
         overlay.style.display = 'none';
       }
     }
 
+    // Function to calculate the rotation based on the corners
+    function calculateRotation(corners) {
+      // Calculate the angle between the top two corners
+      const deltaX = corners[1].x - corners[0].x;
+      const deltaY = corners[1].y - corners[0].y;
+      return Math.atan2(deltaY, deltaX) * (180 / Math.PI); // Convert to degrees
+    }
+
+    // Add event listener for time updates
     video.addEventListener('timeupdate', () => {
-      const currentFrame = Math.floor(video.currentTime * 30); // 30 FPS als Beispiel
-      updateOverlayText(personalizedText, currentFrame);
+      const currentFrame = Math.floor(video.currentTime * 30); // Assuming 30 FPS
+      updateOverlay(currentFrame);
+    });
+
+    video.addEventListener('ended', () => {
+      document.body.style.backgroundColor = "white"; // Background to white
+      videoContainer.classList.remove('active');
+      arContainer.classList.add('active');
     });
 
     playPauseButton.addEventListener('click', () => {
@@ -189,9 +222,52 @@
     forwardButton.addEventListener('click', () => {
       video.currentTime = Math.min(video.duration, video.currentTime + 10);
     });
+
+    function displayPersonalizedMessage() {
+      const messageElement = document.getElementById('message');
+      if (userName) {
+        const messageText = `DANKE, ${userName}, DASS DU EINEN BAUM GEpflanzt HAST!`;
+        let i = 0;
+        let firstRun = true;
+
+        function typeWriter() {
+          if (i < messageText.length) {
+            messageElement.innerHTML += messageText.charAt(i);
+            i++;
+            setTimeout(typeWriter, 100);
+          } else {
+            setTimeout(() => {
+              if (firstRun) {
+                firstRun = false;
+                messageElement.style.visibility = 'visible'; // Show message
+              }
+              messageElement.innerHTML = '';
+              i = 0;
+              setTimeout(typeWriter, 100);  // Start typing again after 1 second pause
+            }, 2000);  // Pause for 2 seconds before clearing and starting again
+          }
+        }
+
+        typeWriter();
+      }
+    }
+
+    displayPersonalizedMessage();
+
+    arButton.addEventListener('click', () => {
+      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
+      modelViewer.activateAR();
+    });
+
+    modelViewer.addEventListener('ar-status', (event) => {
+      if (event.detail.status === 'not-presenting') {
+        document.body.style.backgroundColor = "white"; // Change background to white when returning from AR
+      }
+    });
   </script>
 </body>
 </html>
+
 
 
 
