@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Personalized Video</title>
+  <title>AR Tree Project</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
   <style>
     body, html {
       margin: 0;
@@ -11,69 +13,177 @@
       height: 100%;
       overflow: hidden;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
       background: black;
     }
-    #video-container {
-      position: relative;
+    #video-container, #ar-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       width: 100%;
-      max-width: 800px;
+      height: 100%;
     }
-    video, canvas {
+    #video-container.active, #ar-container.active {
+      display: flex;
+    }
+    video {
       width: 100%;
       height: auto;
+      max-height: 100%;
+      object-fit: contain;
     }
-    canvas {
+    .overlay {
       position: absolute;
-      top: 0;
-      left: 0;
-      pointer-events: none; /* Mausereignisse ignorieren */
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 36px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+      font-family: 'Oswald', sans-serif;
+      text-align: center;
+      text-transform: uppercase;
+      line-height: 1.2;
+      display: none;
+      white-space: pre-wrap;
+    }
+    .header {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .header img {
+      width: 600px;
+    }
+    .message-container {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Zentriert die Nachricht horizontal */
+      height: 100px; /* Höhe der Nachricht erhöht */
+    }
+    .message {
+      margin: 20px;
+      font-size: 48px; /* Vergrößert die Schriftgröße */
+      text-align: center;
+      white-space: pre-wrap; /* Ermöglicht Zeilenumbrüche */
+      overflow: hidden;
+      color: #D2B48C; /* Hellbraune Farbe */
+      text-shadow: 0 0 5px #D2B48C; /* Glühen-Effekt */
+      font-family: 'Courier New', Courier, monospace; /* Ändert die Schriftart */
+      animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
+      visibility: hidden; /* Unsichtbar zu Beginn */
+    }
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: #D2B48C }
+    }
+    model-viewer {
+      width: 100vw;
+      height: calc(100vh - 240px);
+      position: relative;
+    }
+    .ar-button {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      padding: 28.8px 57.6px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 33.6px;
+      cursor: pointer;
+    }
+    .custom-controls {
+      position: relative;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px 0;
+    }
+    .control-button {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 40px; /* Vergrößert um 50% von 27px */
+      padding: 22.5px 45px; /* Vergrößert um 50% von 15px 30px */
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div id="video-container">
-    <video id="personalized-video" controls>
+  <div id="video-container" class="active">
+    <video id="personalized-video" poster="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2-thumbnail.jpg" playsinline>
       <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video3.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <canvas id="text-overlay"></canvas>
+    <div class="overlay" id="overlay"></div>
+    <div class="custom-controls">
+      <button class="control-button" id="rewind-button">-10s</button>
+      <button class="control-button" id="play-pause-button">Play</button>
+      <button class="control-button" id="forward-button">+10s</button>
+    </div>
+  </div>
+
+  <div id="ar-container">
+    <div class="header">
+      <img src="https://www.forum-csr.net/global/images/cms/Logos/click_a_tree_official_logo_horizontal_png_5_1.png" alt="Click a Tree Logo">
+    </div>
+    <div class="message-container">
+      <div class="message" id="message"></div>
+    </div>
+    <model-viewer
+      id="tree-viewer"
+      src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test4.glb"
+      ar
+      ar-modes="scene-viewer quick-look webxr"
+      camera-controls
+      alt="A 3D model of a tree"
+      shadow-intensity="1"
+      auto-rotate
+      scale="1 1 1">
+    </model-viewer>
+    <button class="ar-button" id="ar-button">View in AR</button>
   </div>
 
   <script>
     const video = document.getElementById('personalized-video');
-    const canvas = document.getElementById('text-overlay');
-    const ctx = canvas.getContext('2d');
+    const overlay = document.getElementById('overlay');
+    const videoContainer = document.getElementById('video-container');
+    const arContainer = document.getElementById('ar-container');
+    const modelViewer = document.getElementById('tree-viewer');
+    const arButton = document.getElementById('ar-button');
+    const playPauseButton = document.getElementById('play-pause-button');
+    const rewindButton = document.getElementById('rewind-button');
+    const forwardButton = document.getElementById('forward-button');
 
-    // Originalgröße des Videos in Mocha
-    const originalWidth = 1920; // Beispielwert, anpassen
-    const originalHeight = 1080; // Beispielwert, anpassen
+    // Originalgröße des Videos in Mocha (Beispielwerte, anpassen falls notwendig)
+    const originalWidth = 1920; 
+    const originalHeight = 1080;
 
     // Funktion zum Laden der JSON-Daten
     fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test3.json')
       .then(response => response.json())
       .then(trackingData => {
-
-        function updateCanvasSize() {
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-        }
-
-        function drawTextOnCanvas(text, x, y, angle) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height); // Canvas löschen
-          ctx.save();
-          ctx.translate(x, y);
-          ctx.rotate(angle * Math.PI / 180);
-          ctx.fillStyle = 'white';
-          ctx.font = '36px Oswald';
-          ctx.fillText(text, 0, 0);
-          ctx.restore();
-        }
-
+        // Berechnung der Position und des Winkels basierend auf den Eckpunkten
         function calculateTextTransform(corners) {
-          const scaleX = video.videoWidth / originalWidth;
-          const scaleY = video.videoHeight / originalHeight;
+          const currentWidth = video.videoWidth;
+          const currentHeight = video.videoHeight;
+
+          const scaleX = currentWidth / originalWidth;
+          const scaleY = currentHeight / originalHeight;
 
           const scaledCorners = corners.map(corner => ({
             x: corner.x * scaleX,
@@ -94,21 +204,104 @@
           return { x: midTop.x, y: midTop.y, angle };
         }
 
-        video.addEventListener('loadedmetadata', updateCanvasSize);
-        window.addEventListener('resize', updateCanvasSize);
-
-        video.addEventListener('timeupdate', () => {
-          const currentFrame = Math.floor(video.currentTime * 30); // FPS anpassen auf 30
-          const data = trackingData.scene1.frameData.find(frame => frame.frame === currentFrame);
+        // Aktualisierung der Textposition und -rotation
+        function updateTextTransform(frameNumber) {
+          const data = trackingData.scene1.frameData.find(frame => frame.frame === frameNumber);
           if (data) {
             const transform = calculateTextTransform(data.corners);
-            drawTextOnCanvas("NAME", transform.x, transform.y, transform.angle);
+            overlay.style.left = `${transform.x}px`;
+            overlay.style.top = `${transform.y}px`;
+            overlay.style.transform = `translate(-50%, -50%) rotate(${transform.angle}deg)`;
+          }
+        }
+
+        // Event-Listener für Zeitaktualisierung im Video
+        video.addEventListener('timeupdate', () => {
+          const currentFrame = Math.floor(video.currentTime * 30); // FPS anpassen auf 30
+          updateTextTransform(currentFrame);
+
+          // Testtext für den angegebenen Frame-Bereich anzeigen
+          if (currentFrame >= 341 && currentFrame <= 416) {
+            overlay.textContent = "NAME";
+            overlay.style.display = 'block';
           } else {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Canvas löschen, wenn kein Text angezeigt wird
+            overlay.style.display = 'none';
           }
         });
       })
       .catch(error => console.error('Error loading tracking data:', error));
+
+    video.addEventListener('ended', () => {
+      document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern
+      videoContainer.classList.remove('active');
+      arContainer.classList.add('active');
+    });
+
+    playPauseButton.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+        playPauseButton.textContent = 'Pause';
+      } else {
+        video.pause();
+        playPauseButton.textContent = 'Play';
+      }
+    });
+
+    rewindButton.addEventListener('click', () => {
+      video.currentTime = Math.max(0, video.currentTime - 10);
+    });
+
+    forwardButton.addEventListener('click', () => {
+      video.currentTime = Math.min(video.duration, video.currentTime + 10);
+    });
+
+    function displayPersonalizedMessage() {
+      const messageElement = document.getElementById('message');
+      const userName = getQueryParameter('user');
+      if (userName) {
+        const messageText = `DANKE, ${userName}, DASS DU EINEN BAUM GEPFLANZT HAST!`;
+        let i = 0;
+        let firstRun = true;
+
+        function typeWriter() {
+          if (i < messageText.length) {
+            messageElement.innerHTML += messageText.charAt(i);
+            i++;
+            setTimeout(typeWriter, 100);
+          } else {
+            setTimeout(() => {
+              if (firstRun) {
+                firstRun = false;
+                messageElement.style.visibility = 'visible'; // Nachricht sichtbar machen
+              }
+              messageElement.innerHTML = '';
+              i = 0;
+              setTimeout(typeWriter, 100);  // Start typing again after 1 second pause
+            }, 2000);  // Pause for 2 seconds before clearing and starting again
+          }
+        }
+
+        typeWriter();
+      }
+    }
+
+    displayPersonalizedMessage();
+
+    arButton.addEventListener('click', () => {
+      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
+      modelViewer.activateAR();
+    });
+
+    modelViewer.addEventListener('ar-status', (event) => {
+      if (event.detail.status === 'not-presenting') {
+        document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern, wenn zurück aus AR
+      }
+    });
+
+    function getQueryParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
   </script>
 </body>
 </html>
