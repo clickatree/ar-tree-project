@@ -156,7 +156,7 @@
     const rewindButton = document.getElementById('rewind-button');
     const forwardButton = document.getElementById('forward-button');
 
-    const offsetX = 845;
+    const offsetX = 855;
     const offsetY = 545;
     const rotationAdjust = 1;
 
@@ -172,7 +172,7 @@
         if (i < text.length) {
           element.textContent += text.charAt(i);
           i++;
-          setTimeout(typing, 40); // Geschwindigkeit der Animation anpassen (schneller)
+          setTimeout(typing, 30); // Geschwindigkeit der Animation anpassen (schneller)
         }
       }
       typing();
