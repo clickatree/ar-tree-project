@@ -38,7 +38,7 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-45%, -45%); /* Manuell angepasst */
       color: white;
       font-size: 36px;
       background-color: rgba(0, 0, 0, 0.5);
@@ -61,20 +61,20 @@
     .message-container {
       display: flex;
       align-items: center;
-      justify-content: center;
-      height: 100px;
+      justify-content: center; /* Zentriert die Nachricht horizontal */
+      height: 100px; /* Höhe der Nachricht erhöht */
     }
     .message {
       margin: 20px;
-      font-size: 48px;
+      font-size: 48px; /* Vergrößert die Schriftgröße */
       text-align: center;
-      white-space: pre-wrap;
+      white-space: pre-wrap; /* Ermöglicht Zeilenumbrüche */
       overflow: hidden;
-      color: #D2B48C;
-      text-shadow: 0 0 5px #D2B48C;
-      font-family: 'Courier New', Courier, monospace;
+      color: #D2B48C; /* Hellbraune Farbe */
+      text-shadow: 0 0 5px #D2B48C; /* Glühen-Effekt */
+      font-family: 'Courier New', Courier, monospace; /* Ändert die Schriftart */
       animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
-      visibility: hidden;
+      visibility: hidden; /* Unsichtbar zu Beginn */
     }
     @keyframes typing {
       from { width: 0 }
@@ -117,8 +117,8 @@
       color: white;
       border: none;
       border-radius: 5px;
-      font-size: 40px;
-      padding: 22.5px 45px;
+      font-size: 40px; /* Vergrößert um 50% von 27px */
+      padding: 22.5px 45px; /* Vergrößert um 50% von 15px 30px */
       cursor: pointer;
     }
   </style>
@@ -196,7 +196,7 @@
             const transform = calculateTextTransform(data.corners);
             overlay.style.left = `${transform.x}px`;
             overlay.style.top = `${transform.y}px`;
-            overlay.style.transform = `translate(-50%, -50%) rotate(${transform.angle}deg)`;
+            overlay.style.transform = `translate(-45%, -45%) rotate(${transform.angle}deg)`; // Manuell angepasst
           }
         }
 
@@ -290,6 +290,7 @@
   </script>
 </body>
 </html>
+
 
 
 
