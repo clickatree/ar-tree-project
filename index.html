@@ -195,9 +195,9 @@
           if (data) {
             const transform = calculateTextTransform(data.corners);
             // Manuelle Anpassungen basierend auf dem Bild
-            const offsetX = 50; // Offset nach rechts (Pixel)
-            const offsetY = 100; // Offset nach unten (Pixel)
-            const rotationAdjust = -10; // Rotation Adjust (Grad)
+            const offsetX = 80; // Zusätzlicher Offset nach rechts
+            const offsetY = 120; // Zusätzlicher Offset nach unten
+            const rotationAdjust = -15; // Zusätzliche Rotation
 
             overlay.style.left = `${transform.x + offsetX}px`;
             overlay.style.top = `${transform.y + offsetY}px`;
@@ -267,7 +267,7 @@
               messageElement.innerHTML = '';
               i = 0;
               setTimeout(typeWriter, 100);  // Start typing again after 1 second pause
-            }, 2000);  // Pause for 2 seconds before clearing and starting again
+            }, 2000);  // Pause for 2 seconds before clearing und starting again
           }
         }
 
