@@ -125,7 +125,7 @@
 </head>
 <body>
   <div id="video-container" class="active">
-    <video id="personalized-video" poster="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video3-thumbnail.jpg" playsinline>
+    <video id="personalized-video" poster="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2-thumbnail.jpg" playsinline>
       <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video3.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
@@ -170,26 +170,21 @@
     const forwardButton = document.getElementById('forward-button');
 
     // Funktion zum Laden der JSON-Daten
-    fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test3.json')
+    fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/trackingData.json')
       .then(response => response.json())
       .then(trackingData => {
         // Berechnung der Position und des Winkels basierend auf den Eckpunkten
         function calculateTextTransform(corners) {
-          // Manueller Offset für Position und Rotation
-          const offsetX = 80; // Manuell anpassen
-          const offsetY = 200; // Manuell anpassen
-          const offsetAngle = 5; // Manuell anpassen
-
           const midTop = {
-            x: (corners[0].x + corners[1].x) / 2 + offsetX,
-            y: (corners[0].y + corners[1].y) / 2 + offsetY
+            x: (corners[0].x + corners[1].x) / 2,
+            y: (corners[0].y + corners[1].y) / 2
           };
           const midBottom = {
-            x: (corners[2].x + corners[3].x) / 2 + offsetX,
-            y: (corners[2].y + corners[3].y) / 2 + offsetY
+            x: (corners[2].x + corners[3].x) / 2,
+            y: (corners[2].y + corners[3].y) / 2
           };
 
-          const angle = Math.atan2(midBottom.y - midTop.y, midBottom.x - midTop.x) * (180 / Math.PI) + offsetAngle;
+          const angle = Math.atan2(midBottom.y - midTop.y, midBottom.x - midTop.x) * (180 / Math.PI);
 
           return { x: midTop.x, y: midTop.y, angle };
         }
@@ -202,9 +197,6 @@
             overlay.style.left = `${transform.x}px`;
             overlay.style.top = `${transform.y}px`;
             overlay.style.transform = `translate(-50%, -50%) rotate(${transform.angle}deg)`;
-            overlay.style.display = 'block';
-          } else {
-            overlay.style.display = 'none';
           }
         }
 
@@ -212,6 +204,14 @@
         video.addEventListener('timeupdate', () => {
           const currentFrame = Math.floor(video.currentTime * 30); // FPS anpassen auf 30
           updateTextTransform(currentFrame);
+
+          // Testtext für den angegebenen Frame-Bereich anzeigen
+          if (currentFrame >= 341 && currentFrame <= 416) {
+            overlay.textContent = "NAME";
+            overlay.style.display = 'block';
+          } else {
+            overlay.style.display = 'none';
+          }
         });
       })
       .catch(error => console.error('Error loading tracking data:', error));
@@ -290,6 +290,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
