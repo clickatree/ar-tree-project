@@ -156,9 +156,9 @@
     const rewindButton = document.getElementById('rewind-button');
     const forwardButton = document.getElementById('forward-button');
 
-    const offsetX = 830;
+    const offsetX = 840;
     const offsetY = 545;
-    const rotationAdjust = 5;
+    const rotationAdjust = 15;
 
     function getQueryParameter(name) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -172,7 +172,7 @@
         if (i < text.length) {
           element.textContent += text.charAt(i);
           i++;
-          setTimeout(typing, 20); // Geschwindigkeit der Animation anpassen (schneller)
+          setTimeout(typing, 30); // Geschwindigkeit der Animation anpassen (schneller)
         }
       }
       typing();
