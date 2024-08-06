@@ -125,7 +125,7 @@
 </head>
 <body>
   <div id="video-container" class="active">
-    <video id="personalized-video" poster="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video2-thumbnail.jpg" playsinline>
+    <video id="personalized-video" poster="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video3-thumbnail.jpg" playsinline>
       <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video3.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
@@ -170,7 +170,7 @@
     const forwardButton = document.getElementById('forward-button');
 
     // Funktion zum Laden der JSON-Daten
-    fetch('/mnt/data/test3.json')
+    fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test3.json')
       .then(response => response.json())
       .then(trackingData => {
         // Berechnung der Position und des Winkels basierend auf den Eckpunkten
@@ -202,7 +202,7 @@
 
         // Event-Listener für Zeitaktualisierung im Video
         video.addEventListener('timeupdate', () => {
-          const currentFrame = Math.floor(video.currentTime * 30); // FPS anpassen
+          const currentFrame = Math.floor(video.currentTime * 30); // FPS anpassen auf 30
           updateTextTransform(currentFrame);
 
           // Testtext für den angegebenen Frame-Bereich anzeigen
