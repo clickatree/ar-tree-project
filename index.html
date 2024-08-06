@@ -36,9 +36,8 @@
     }
     .overlay {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-45%, -45%); /* Manuell angepasst */
+      top: 0;
+      left: 0;
       color: white;
       font-size: 36px;
       background-color: rgba(0, 0, 0, 0.5);
@@ -61,20 +60,20 @@
     .message-container {
       display: flex;
       align-items: center;
-      justify-content: center; /* Zentriert die Nachricht horizontal */
-      height: 100px; /* Höhe der Nachricht erhöht */
+      justify-content: center;
+      height: 100px;
     }
     .message {
       margin: 20px;
-      font-size: 48px; /* Vergrößert die Schriftgröße */
+      font-size: 48px;
       text-align: center;
-      white-space: pre-wrap; /* Ermöglicht Zeilenumbrüche */
+      white-space: pre-wrap;
       overflow: hidden;
-      color: #D2B48C; /* Hellbraune Farbe */
-      text-shadow: 0 0 5px #D2B48C; /* Glühen-Effekt */
-      font-family: 'Courier New', Courier, monospace; /* Ändert die Schriftart */
+      color: #D2B48C;
+      text-shadow: 0 0 5px #D2B48C;
+      font-family: 'Courier New', Courier, monospace;
       animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
-      visibility: hidden; /* Unsichtbar zu Beginn */
+      visibility: hidden;
     }
     @keyframes typing {
       from { width: 0 }
@@ -117,8 +116,8 @@
       color: white;
       border: none;
       border-radius: 5px;
-      font-size: 40px; /* Vergrößert um 50% von 27px */
-      padding: 22.5px 45px; /* Vergrößert um 50% von 15px 30px */
+      font-size: 40px;
+      padding: 22.5px 45px;
       cursor: pointer;
     }
   </style>
@@ -170,7 +169,7 @@
     const forwardButton = document.getElementById('forward-button');
 
     // Funktion zum Laden der JSON-Daten
-    fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/tes3t.json')
+    fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/trackingData.json')
       .then(response => response.json())
       .then(trackingData => {
         // Berechnung der Position und des Winkels basierend auf den Eckpunkten
@@ -194,9 +193,9 @@
           const data = trackingData.scene1.frameData.find(frame => frame.frame === frameNumber);
           if (data) {
             const transform = calculateTextTransform(data.corners);
-            overlay.style.left = `${transform.x}px`;
-            overlay.style.top = `${transform.y}px`;
-            overlay.style.transform = `translate(-45%, -45%) rotate(${transform.angle}deg)`; // Manuell angepasst
+            overlay.style.left = `${transform.x + 10}px`; // Manuell angepasst
+            overlay.style.top = `${transform.y - 20}px`; // Manuell angepasst
+            overlay.style.transform = `rotate(${transform.angle - 5}deg)`; // Manuell angepasst
           }
         }
 
@@ -290,6 +289,7 @@
   </script>
 </body>
 </html>
+
 
 
 
