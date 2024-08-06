@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>AR Tree Project</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
   <style>
     body, html {
       margin: 0;
@@ -41,7 +41,7 @@
       background-color: rgba(0, 0, 0, 0.5);
       padding: 10px;
       border-radius: 5px;
-      font-family: 'Oswald', sans-serif;
+      font-family: 'Roboto', sans-serif; /* Schriftart aus Screenshot */
       text-align: center;
       text-transform: uppercase;
       line-height: 1.2;
@@ -126,7 +126,7 @@
       <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video3.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <div class="overlay" id="overlay">NAME</div>
+    <div class="overlay" id="overlay">ORDER FROM</div>
     <div class="custom-controls">
       <button class="control-button" id="rewind-button">-10s</button>
       <button class="control-button" id="play-pause-button">Play</button>
@@ -171,6 +171,25 @@
     const offsetY = 545;
     const rotationAdjust = 0;
 
+    // Funktion, um den Namen aus der URL zu extrahieren
+    function getQueryParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    // Funktion für die Typewriter-Animation
+    function typeWriter(text, element) {
+      let i = 0;
+      function typing() {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
+          i++;
+          setTimeout(typing, 100); // Geschwindigkeit der Animation anpassen
+        }
+      }
+      typing();
+    }
+
     // Event-Listener für Zeitaktualisierung im Video
     video.addEventListener('timeupdate', () => {
       // Position und Rotation setzen
@@ -178,9 +197,13 @@
       overlay.style.top = `${offsetY}px`;
       overlay.style.transform = `translate(-50%, -50%) rotate(${rotationAdjust}deg)`;
 
-      // Testtext für den angegebenen Frame-Bereich anzeigen
+      // Text für den angegebenen Frame-Bereich anzeigen und animieren
       if (video.currentTime >= 11.37 && video.currentTime <= 13.87) {
+        const userName = getQueryParameter('user') || "USER"; // Standardwert USER
+        const text = `ORDER FROM ${userName.toUpperCase()}`;
+        overlay.textContent = ""; // Vorherigen Inhalt löschen
         overlay.style.display = 'block';
+        typeWriter(text, overlay); // Typewriter-Animation starten
       } else {
         overlay.style.display = 'none';
       }
@@ -232,7 +255,7 @@
               messageElement.innerHTML = '';
               i = 0;
               setTimeout(typeWriter, 100);  // Start typing again after 1 second pause
-            }, 2000);  // Pause for 2 seconds before clearing und starting again
+            }, 2000);  // Pause for 2 seconds before clearing and starting again
           }
         }
 
@@ -252,14 +275,10 @@
         document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern, wenn zurück aus AR
       }
     });
-
-    function getQueryParameter(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
   </script>
 </body>
 </html>
+
 
 
 
