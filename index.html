@@ -36,8 +36,9 @@
     }
     .overlay {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       color: white;
       font-size: 36px;
       background-color: rgba(0, 0, 0, 0.5);
@@ -111,7 +112,7 @@
       gap: 20px;
       padding: 10px 0;
     }
-      .control-button {
+    .control-button {
       background-color: rgba(0, 0, 0, 0.5);
       color: white;
       border: none;
@@ -193,9 +194,14 @@
           const data = trackingData.scene1.frameData.find(frame => frame.frame === frameNumber);
           if (data) {
             const transform = calculateTextTransform(data.corners);
-            overlay.style.left = `${transform.x + 50}px`; // Manuell angepasst: verschiebt nach rechts
-            overlay.style.top = `${transform.y + 100}px`; // Manuell angepasst: verschiebt nach unten
-            overlay.style.transform = `rotate(${transform.angle - 10}deg)`; // Manuell angepasst: dreht leicht
+            // Manuelle Anpassungen basierend auf dem Bild
+            const offsetX = 50; // Offset nach rechts (Pixel)
+            const offsetY = 100; // Offset nach unten (Pixel)
+            const rotationAdjust = -10; // Rotation Adjust (Grad)
+
+            overlay.style.left = `${transform.x + offsetX}px`;
+            overlay.style.top = `${transform.y + offsetY}px`;
+            overlay.style.transform = `translate(-50%, -50%) rotate(${transform.angle + rotationAdjust}deg)`;
           }
         }
 
