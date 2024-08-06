@@ -41,12 +41,12 @@
       background-color: rgba(0, 0, 0, 0.5);
       padding: 10px;
       border-radius: 5px;
-      font-family: 'Roboto', sans-serif; /* Schriftart aus Screenshot */
+      font-family: 'Roboto', sans-serif;
       text-align: center;
       text-transform: uppercase;
       line-height: 1.2;
-      white-space: pre-wrap;
       display: none;
+      white-space: pre-wrap;
     }
     .header {
       margin-top: 40px;
@@ -70,16 +70,7 @@
       color: #D2B48C;
       text-shadow: 0 0 5px #D2B48C;
       font-family: 'Courier New', Courier, monospace;
-      animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
       visibility: hidden;
-    }
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
-    }
-    @keyframes blink-caret {
-      from, to { border-color: transparent }
-      50% { border-color: #D2B48C }
     }
     model-viewer {
       width: 100vw;
@@ -126,7 +117,7 @@
       <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video3.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <div class="overlay" id="overlay">ORDER FROM</div>
+    <div class="overlay" id="overlay"></div>
     <div class="custom-controls">
       <button class="control-button" id="rewind-button">-10s</button>
       <button class="control-button" id="play-pause-button">Play</button>
@@ -166,54 +157,54 @@
     const rewindButton = document.getElementById('rewind-button');
     const forwardButton = document.getElementById('forward-button');
 
-    // Offsets und Rotation für die Positionierung des Textes
-    const offsetX = 800;
-    const offsetY = 545;
-    const rotationAdjust = 0;
+    // Offsets für die Position und Rotation des Overlays
+    const offsetX = -50; // X-Offset zur Feineinstellung der Position
+    const offsetY = -50; // Y-Offset zur Feineinstellung der Position
+    const rotationOffset = -10; // Rotationsoffset in Grad zur Feineinstellung
 
-    // Funktion, um den Namen aus der URL zu extrahieren
     function getQueryParameter(name) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(name);
     }
 
-    // Funktion für die Typewriter-Animation
-    function typeWriter(text, element) {
-      let i = 0;
-      function typing() {
-        if (i < text.length) {
-          element.textContent += text.charAt(i);
-          i++;
-          setTimeout(typing, 100); // Geschwindigkeit der Animation anpassen
+    function displayPersonalizedMessage() {
+      const messageElement = document.getElementById('message');
+      const userName = getQueryParameter('user');
+      if (userName) {
+        const messageText = `ORDER FROM ${userName.toUpperCase()}`;
+        let i = 0;
+
+        function typeWriter() {
+          if (i < messageText.length) {
+            messageElement.innerHTML += messageText.charAt(i);
+            i++;
+            setTimeout(typeWriter, 100);
+          } else {
+            messageElement.style.visibility = 'visible';
+          }
         }
+
+        messageElement.innerHTML = ''; // Reset the content before typing
+        messageElement.style.visibility = 'hidden'; // Ensure the message is not visible at the start
+        typeWriter();
       }
-      typing();
     }
 
-    // Event-Listener für Zeitaktualisierung im Video
     video.addEventListener('timeupdate', () => {
-      // Position und Rotation setzen
-      overlay.style.left = `${offsetX}px`;
-      overlay.style.top = `${offsetY}px`;
-      overlay.style.transform = `translate(-50%, -50%) rotate(${rotationAdjust}deg)`;
-
-      // Text für den angegebenen Frame-Bereich anzeigen und animieren
-      if (video.currentTime >= 11.37 && video.currentTime <= 13.87) {
-        const userName = getQueryParameter('user') || "USER"; // Standardwert USER
-        const text = `ORDER FROM ${userName.toUpperCase()}`;
-        overlay.textContent = ""; // Vorherigen Inhalt löschen
+      const currentFrame = Math.floor(video.currentTime * 30);
+      if (currentFrame >= 341 && currentFrame <= 416) {
         overlay.style.display = 'block';
-        typeWriter(text, overlay); // Typewriter-Animation starten
       } else {
         overlay.style.display = 'none';
       }
     });
 
-    video.addEventListener('ended', () => {
-      document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern
-      videoContainer.classList.remove('active');
-      arContainer.classList.add('active');
-    });
+    displayPersonalizedMessage();
+
+    // Set the overlay position and rotation
+    overlay.style.left = `calc(50% + ${offsetX}px)`;
+    overlay.style.top = `calc(50% + ${offsetY}px)`;
+    overlay.style.transform = `translate(-50%, -50%) rotate(${rotationOffset}deg)`;
 
     playPauseButton.addEventListener('click', () => {
       if (video.paused) {
@@ -233,46 +224,14 @@
       video.currentTime = Math.min(video.duration, video.currentTime + 10);
     });
 
-    function displayPersonalizedMessage() {
-      const messageElement = document.getElementById('message');
-      const userName = getQueryParameter('user');
-      if (userName) {
-        const messageText = `DANKE, ${userName}, DASS DU EINEN BAUM GEPFLANZT HAST!`;
-        let i = 0;
-        let firstRun = true;
-
-        function typeWriter() {
-          if (i < messageText.length) {
-            messageElement.innerHTML += messageText.charAt(i);
-            i++;
-            setTimeout(typeWriter, 100);
-          } else {
-            setTimeout(() => {
-              if (firstRun) {
-                firstRun = false;
-                messageElement.style.visibility = 'visible'; // Nachricht sichtbar machen
-              }
-              messageElement.innerHTML = '';
-              i = 0;
-              setTimeout(typeWriter, 100);  // Start typing again after 1 second pause
-            }, 2000);  // Pause for 2 seconds before clearing and starting again
-          }
-        }
-
-        typeWriter();
-      }
-    }
-
-    displayPersonalizedMessage();
-
     arButton.addEventListener('click', () => {
-      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
+      modelViewer.setAttribute('scale', '1 1 1');
       modelViewer.activateAR();
     });
 
     modelViewer.addEventListener('ar-status', (event) => {
       if (event.detail.status === 'not-presenting') {
-        document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern, wenn zurück aus AR
+        document.body.style.backgroundColor = "white";
       }
     });
   </script>
