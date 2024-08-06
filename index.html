@@ -36,6 +36,9 @@
     }
     .overlay {
       position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       color: white;
       font-size: 36px;
       background-color: rgba(0, 0, 0, 0.5);
@@ -58,20 +61,20 @@
     .message-container {
       display: flex;
       align-items: center;
-      justify-content: center;
-      height: 100px;
+      justify-content: center; /* Zentriert die Nachricht horizontal */
+      height: 100px; /* Höhe der Nachricht erhöht */
     }
     .message {
       margin: 20px;
-      font-size: 48px;
+      font-size: 48px; /* Vergrößert die Schriftgröße */
       text-align: center;
-      white-space: pre-wrap;
+      white-space: pre-wrap; /* Ermöglicht Zeilenumbrüche */
       overflow: hidden;
-      color: #D2B48C;
-      text-shadow: 0 0 5px #D2B48C;
-      font-family: 'Courier New', Courier, monospace;
+      color: #D2B48C; /* Hellbraune Farbe */
+      text-shadow: 0 0 5px #D2B48C; /* Glühen-Effekt */
+      font-family: 'Courier New', Courier, monospace; /* Ändert die Schriftart */
       animation: typing 5s steps(40, end), blink-caret 0.75s step-end infinite;
-      visibility: hidden;
+      visibility: hidden; /* Unsichtbar zu Beginn */
     }
     @keyframes typing {
       from { width: 0 }
@@ -114,8 +117,8 @@
       color: white;
       border: none;
       border-radius: 5px;
-      font-size: 40px;
-      padding: 22.5px 45px;
+      font-size: 40px; /* Vergrößert um 50% von 27px */
+      padding: 22.5px 45px; /* Vergrößert um 50% von 15px 30px */
       cursor: pointer;
     }
   </style>
@@ -158,49 +161,63 @@
   <script>
     const video = document.getElementById('personalized-video');
     const overlay = document.getElementById('overlay');
-    let frameData = {}; // Will store the frame data from JSON
+    const videoContainer = document.getElementById('video-container');
+    const arContainer = document.getElementById('ar-container');
+    const modelViewer = document.getElementById('tree-viewer');
+    const arButton = document.getElementById('ar-button');
+    const playPauseButton = document.getElementById('play-pause-button');
+    const rewindButton = document.getElementById('rewind-button');
+    const forwardButton = document.getElementById('forward-button');
 
-    // Fetch the JSON data
-    fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test3.json')
+    // Funktion zum Laden der JSON-Daten
+    fetch('/mnt/data/test3.json')
       .then(response => response.json())
-      .then(data => {
-        frameData = data.frameData;
+      .then(trackingData => {
+        // Berechnung der Position und des Winkels basierend auf den Eckpunkten
+        function calculateTextTransform(corners) {
+          const midTop = {
+            x: (corners[0].x + corners[1].x) / 2,
+            y: (corners[0].y + corners[1].y) / 2
+          };
+          const midBottom = {
+            x: (corners[2].x + corners[3].x) / 2,
+            y: (corners[2].y + corners[3].y) / 2
+          };
+
+          const angle = Math.atan2(midBottom.y - midTop.y, midBottom.x - midTop.x) * (180 / Math.PI);
+
+          return { x: midTop.x, y: midTop.y, angle };
+        }
+
+        // Aktualisierung der Textposition und -rotation
+        function updateTextTransform(frameNumber) {
+          const data = trackingData.scene1.frameData.find(frame => frame.frame === frameNumber);
+          if (data) {
+            const transform = calculateTextTransform(data.corners);
+            overlay.style.left = `${transform.x}px`;
+            overlay.style.top = `${transform.y}px`;
+            overlay.style.transform = `translate(-50%, -50%) rotate(${transform.angle}deg)`;
+          }
+        }
+
+        // Event-Listener für Zeitaktualisierung im Video
+        video.addEventListener('timeupdate', () => {
+          const currentFrame = Math.floor(video.currentTime * 30); // FPS anpassen
+          updateTextTransform(currentFrame);
+
+          // Testtext für den angegebenen Frame-Bereich anzeigen
+          if (currentFrame >= 341 && currentFrame <= 416) {
+            overlay.textContent = "NAME";
+            overlay.style.display = 'block';
+          } else {
+            overlay.style.display = 'none';
+          }
+        });
       })
-      .catch(error => console.error('Error loading JSON:', error));
-
-    // Function to update the overlay based on frame data
-    function updateOverlay(frame) {
-      const frameInfo = frameData.find(item => item.frame === frame);
-      if (frameInfo) {
-        // Calculate the center position for the text
-        const centerX = (frameInfo.corners[0].x + frameInfo.corners[1].x) / 2;
-        const centerY = (frameInfo.corners[0].y + frameInfo.corners[2].y) / 2;
-        overlay.style.left = `${centerX}px`;
-        overlay.style.top = `${centerY}px`;
-        overlay.style.transform = `translate(-50%, -50%) rotate(${calculateRotation(frameInfo.corners)}deg)`;
-        overlay.style.display = 'block';
-        overlay.textContent = `ORDER FROM ${getQueryParameter('user')}`;
-      } else {
-        overlay.style.display = 'none';
-      }
-    }
-
-    // Function to calculate the rotation based on the corners
-    function calculateRotation(corners) {
-      // Calculate the angle between the top two corners
-      const deltaX = corners[1].x - corners[0].x;
-      const deltaY = corners[1].y - corners[0].y;
-      return Math.atan2(deltaY, deltaX) * (180 / Math.PI); // Convert to degrees
-    }
-
-    // Add event listener for time updates
-    video.addEventListener('timeupdate', () => {
-      const currentFrame = Math.floor(video.currentTime * 30); // Assuming 30 FPS
-      updateOverlay(currentFrame);
-    });
+      .catch(error => console.error('Error loading tracking data:', error));
 
     video.addEventListener('ended', () => {
-      document.body.style.backgroundColor = "white"; // Background to white
+      document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern
       videoContainer.classList.remove('active');
       arContainer.classList.add('active');
     });
@@ -225,8 +242,9 @@
 
     function displayPersonalizedMessage() {
       const messageElement = document.getElementById('message');
+      const userName = getQueryParameter('user');
       if (userName) {
-        const messageText = `DANKE, ${userName}, DASS DU EINEN BAUM GEpflanzt HAST!`;
+        const messageText = `DANKE, ${userName}, DASS DU EINEN BAUM GEPFLANZT HAST!`;
         let i = 0;
         let firstRun = true;
 
@@ -239,7 +257,7 @@
             setTimeout(() => {
               if (firstRun) {
                 firstRun = false;
-                messageElement.style.visibility = 'visible'; // Show message
+                messageElement.style.visibility = 'visible'; // Nachricht sichtbar machen
               }
               messageElement.innerHTML = '';
               i = 0;
@@ -261,9 +279,14 @@
 
     modelViewer.addEventListener('ar-status', (event) => {
       if (event.detail.status === 'not-presenting') {
-        document.body.style.backgroundColor = "white"; // Change background to white when returning from AR
+        document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern, wenn zurück aus AR
       }
     });
+
+    function getQueryParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
   </script>
 </body>
 </html>
