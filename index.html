@@ -169,34 +169,19 @@
     const rewindButton = document.getElementById('rewind-button');
     const forwardButton = document.getElementById('forward-button');
 
-    // Originalgröße des Videos in Mocha (Beispielwerte, anpassen falls notwendig)
-    const originalWidth = 1920; 
-    const originalHeight = 1080;
-
     // Funktion zum Laden der JSON-Daten
     fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/test3.json')
       .then(response => response.json())
       .then(trackingData => {
         // Berechnung der Position und des Winkels basierend auf den Eckpunkten
         function calculateTextTransform(corners) {
-          const currentWidth = video.videoWidth;
-          const currentHeight = video.videoHeight;
-
-          const scaleX = currentWidth / originalWidth;
-          const scaleY = currentHeight / originalHeight;
-
-          const scaledCorners = corners.map(corner => ({
-            x: corner.x * scaleX,
-            y: corner.y * scaleY
-          }));
-
           const midTop = {
-            x: (scaledCorners[0].x + scaledCorners[1].x) / 2,
-            y: (scaledCorners[0].y + scaledCorners[1].y) / 2
+            x: (corners[0].x + corners[1].x) / 2,
+            y: (corners[0].y + corners[1].y) / 2
           };
           const midBottom = {
-            x: (scaledCorners[2].x + scaledCorners[3].x) / 2,
-            y: (scaledCorners[2].y + scaledCorners[3].y) / 2
+            x: (corners[2].x + corners[3].x) / 2,
+            y: (corners[2].y + corners[3].y) / 2
           };
 
           const angle = Math.atan2(midBottom.y - midTop.y, midBottom.x - midTop.x) * (180 / Math.PI);
