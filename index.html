@@ -41,7 +41,7 @@
       background-color: rgba(0, 0, 0, 0.5);
       padding: 10px;
       border-radius: 5px;
-      font-family: 'Roboto', sans-serif; /* Schriftart aus Screenshot */
+      font-family: 'Roboto', sans-serif;
       text-align: center;
       text-transform: uppercase;
       line-height: 1.2;
@@ -117,7 +117,7 @@
       <source src="https://raw.githubusercontent.com/melsen123/ar-tree-project/main/video3.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <div class="overlay" id="overlay">ORDER FROM</div>
+    <div class="overlay" id="overlay"></div>
     <div class="custom-controls">
       <button class="control-button" id="rewind-button">-10s</button>
       <button class="control-button" id="play-pause-button">Play</button>
@@ -157,51 +157,49 @@
     const rewindButton = document.getElementById('rewind-button');
     const forwardButton = document.getElementById('forward-button');
 
-    // Offsets und Rotation für die Positionierung des Textes
     const offsetX = 800;
     const offsetY = 545;
     const rotationAdjust = 0;
 
-    // Funktion, um den Namen aus der URL zu extrahieren
     function getQueryParameter(name) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(name);
     }
 
-    // Funktion für die Typewriter-Animation
     function typeWriter(text, element) {
       let i = 0;
+      element.textContent = "";
       function typing() {
         if (i < text.length) {
           element.textContent += text.charAt(i);
           i++;
-          setTimeout(typing, 100); // Geschwindigkeit der Animation anpassen
+          setTimeout(typing, 100);
         }
       }
       typing();
     }
 
-    // Event-Listener für Zeitaktualisierung im Video
+    let textDisplayed = false; // Flag to track if the text has been displayed
+
     video.addEventListener('timeupdate', () => {
-      // Position und Rotation setzen
       overlay.style.left = `${offsetX}px`;
       overlay.style.top = `${offsetY}px`;
       overlay.style.transform = `translate(-50%, -50%) rotate(${rotationAdjust}deg)`;
 
-      // Text für den angegebenen Frame-Bereich anzeigen und animieren
-      if (video.currentTime >= 11.37 && video.currentTime <= 13.87) {
-        const userName = getQueryParameter('user') || "USER"; // Standardwert USER
+      if (video.currentTime >= 11.37 && video.currentTime <= 13.87 && !textDisplayed) {
+        const userName = getQueryParameter('user') || "USER";
         const text = `ORDER FROM ${userName.toUpperCase()}`;
-        overlay.textContent = ""; // Vorherigen Inhalt löschen
+        textDisplayed = true; // Set the flag to true when the text starts displaying
         overlay.style.display = 'block';
-        typeWriter(text, overlay); // Typewriter-Animation starten
-      } else {
+        typeWriter(text, overlay);
+      } else if (video.currentTime > 13.87) {
+        textDisplayed = false; // Reset the flag after the display period
         overlay.style.display = 'none';
       }
     });
 
     video.addEventListener('ended', () => {
-      document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern
+      document.body.style.backgroundColor = "white";
       videoContainer.classList.remove('active');
       arContainer.classList.add('active');
     });
@@ -241,12 +239,12 @@
             setTimeout(() => {
               if (firstRun) {
                 firstRun = false;
-                messageElement.style.visibility = 'visible'; // Nachricht sichtbar machen
+                messageElement.style.visibility = 'visible';
               }
               messageElement.innerHTML = '';
               i = 0;
-              setTimeout(typeWriter, 100);  // Start typing again after 1 second pause
-            }, 2000);  // Pause for 2 seconds before clearing and starting again
+              setTimeout(typeWriter, 100);
+            }, 2000);
           }
         }
 
@@ -257,13 +255,13 @@
     displayPersonalizedMessage();
 
     arButton.addEventListener('click', () => {
-      modelViewer.setAttribute('scale', '1 1 1');  // Ensure the scale is set
+      modelViewer.setAttribute('scale', '1 1 1');
       modelViewer.activateAR();
     });
 
     modelViewer.addEventListener('ar-status', (event) => {
       if (event.detail.status === 'not-presenting') {
-        document.body.style.backgroundColor = "white"; // Hintergrund auf Weiß ändern, wenn zurück aus AR
+        document.body.style.backgroundColor = "white";
       }
     });
   </script>
