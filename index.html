@@ -37,7 +37,7 @@
     .overlay {
       position: absolute;
       color: white;
-      font-size: 36px;
+      font-size: 24px; /* Verkleinert die Textgröße */
       background-color: rgba(0, 0, 0, 0.5);
       padding: 10px;
       border-radius: 5px;
@@ -159,7 +159,7 @@
 
     const offsetX = 800;
     const offsetY = 545;
-    const rotationAdjust = 0;
+    const rotationAdjust = -10;
 
     function getQueryParameter(name) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -173,13 +173,13 @@
         if (i < text.length) {
           element.textContent += text.charAt(i);
           i++;
-          setTimeout(typing, 100);
+          setTimeout(typing, 50); // Geschwindigkeit der Animation anpassen (schneller)
         }
       }
       typing();
     }
 
-    let textDisplayed = false; // Flag to track if the text has been displayed
+    let textDisplayed = false;
 
     video.addEventListener('timeupdate', () => {
       overlay.style.left = `${offsetX}px`;
@@ -188,12 +188,12 @@
 
       if (video.currentTime >= 11.37 && video.currentTime <= 13.87 && !textDisplayed) {
         const userName = getQueryParameter('user') || "USER";
-        const text = `ORDER FROM ${userName.toUpperCase()}`;
-        textDisplayed = true; // Set the flag to true when the text starts displaying
+        const text = `ORDER FROM\n${userName.toUpperCase()}`; // Text untereinander
+        textDisplayed = true;
         overlay.style.display = 'block';
         typeWriter(text, overlay);
       } else if (video.currentTime > 13.87) {
-        textDisplayed = false; // Reset the flag after the display period
+        textDisplayed = false;
         overlay.style.display = 'none';
       }
     });
