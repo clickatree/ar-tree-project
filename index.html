@@ -111,7 +111,7 @@
       gap: 20px;
       padding: 10px 0;
     }
-    .control-button {
+      .control-button {
       background-color: rgba(0, 0, 0, 0.5);
       color: white;
       border: none;
@@ -169,7 +169,7 @@
     const forwardButton = document.getElementById('forward-button');
 
     // Funktion zum Laden der JSON-Daten
-    fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/tes3t.json')
+    fetch('https://raw.githubusercontent.com/melsen123/ar-tree-project/main/trackingData.json')
       .then(response => response.json())
       .then(trackingData => {
         // Berechnung der Position und des Winkels basierend auf den Eckpunkten
@@ -193,9 +193,9 @@
           const data = trackingData.scene1.frameData.find(frame => frame.frame === frameNumber);
           if (data) {
             const transform = calculateTextTransform(data.corners);
-            overlay.style.left = `${transform.x + 10}px`; // Manuell angepasst
-            overlay.style.top = `${transform.y - 20}px`; // Manuell angepasst
-            overlay.style.transform = `rotate(${transform.angle - 5}deg)`; // Manuell angepasst
+            overlay.style.left = `${transform.x + 50}px`; // Manuell angepasst: verschiebt nach rechts
+            overlay.style.top = `${transform.y + 100}px`; // Manuell angepasst: verschiebt nach unten
+            overlay.style.transform = `rotate(${transform.angle - 10}deg)`; // Manuell angepasst: dreht leicht
           }
         }
 
